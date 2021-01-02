@@ -8,6 +8,7 @@
 		<version>2.3.4.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+
 	<groupId>io.pictive</groupId>
 	<artifactId>pictive-platform-mvp</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
@@ -19,6 +20,7 @@
 		<graphql-starter-version>7.2.0</graphql-starter-version>
 		<graphql-tools-version>6.2.0</graphql-tools-version>
 		<json-unit-version>2.19.0</json-unit-version>
+		<spring-gcp-dependencies-version>1.2.5.RELEASE</spring-gcp-dependencies-version>
 	</properties>
 
 	<dependencies>
@@ -94,7 +96,7 @@
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-gcp-dependencies</artifactId>
-				<version>1.2.5.RELEASE</version>
+				<version>${spring-gcp-dependencies-version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
