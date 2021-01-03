@@ -2,39 +2,60 @@ package io.pictive.platform.domain.collection;
 
 import io.pictive.platform.domain.image.Image;
 import io.pictive.platform.domain.user.User;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
+import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-@AllArgsConstructor
+@Entity
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 @Getter
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Collection {
 
-    private final UUID id;
+    public static Collection withProperties(String displayName) {
 
-    private final User owner;
+        return new Collection(UUID.randomUUID(), true, new HashSet<>(), new HashSet<>(), displayName);
 
-    private final boolean defaultCollection;
+    }
 
-    private final Set<Image> images;
+    @EqualsAndHashCode.Include
+    @NonNull
+    @Id
+    private UUID id;
 
-    private final Set<User> sharedWith;
+    @NonNull
+    private boolean defaultCollection;
 
-    /* Things the user can change */
+    @NonNull
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @Fetch(FetchMode.JOIN)
+    @JoinTable(name = "contained_images",
+            joinColumns = {@JoinColumn(name = "fk_collection")},
+            inverseJoinColumns = {@JoinColumn(name = "fk_image")})
+    private Set<Image> images;
+
+    @NonNull
+    @ManyToMany(mappedBy = "sharedCollections")
+    @Fetch(FetchMode.JOIN)
+    private Set<User> sharedWith;
+
+    @ManyToOne
+    private User owner;
+
+    @NonNull
     private String displayName;
-
-    private String internalName;
 
     private int pin;
 
-    private boolean nonUsersCanShare;
+    private boolean nonOwnersCanShare;
 
-    private boolean nonUsersCanWrite;
+    private boolean nonOwnersCanWrite;
 
 }

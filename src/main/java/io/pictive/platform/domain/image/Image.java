@@ -3,39 +3,62 @@ package io.pictive.platform.domain.image;
 
 import io.pictive.platform.domain.collection.Collection;
 import io.pictive.platform.domain.user.User;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
+import javax.persistence.*;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-@AllArgsConstructor
+@Entity
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 @Getter
+@Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Image {
 
+    public static Image withProperties(String payload) {
+
+        return new Image(UUID.randomUUID(), payload, List.of(new ScoredLabel("kitten", 1.0f)), new HashSet<>());
+
+    }
+
     @EqualsAndHashCode.Include
-    private final UUID id;
+    @NonNull
+    @Id
+    private UUID id;
 
-    private final User owner;
+    @NonNull
+    private String payload;
 
-    private final String payload;
+    private String extractedText;
 
-    private final String extractedText;
+    @NonNull
+    @Embedded
+    @ElementCollection(targetClass = ScoredLabel.class)
+    @Fetch(FetchMode.SUBSELECT)
+    private List<ScoredLabel> scoredLabels;
 
-    private final List<ScoredLabel> scoredLabels;
+    @NonNull
+    @ManyToMany(mappedBy = "images")
+    @Fetch(FetchMode.JOIN)
+    private Set<Collection> containedInCollections;
 
-    private final Set<Collection> containedInCollections;
-
-    @AllArgsConstructor
+    @Embeddable
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @RequiredArgsConstructor
     @Getter
     public static class ScoredLabel {
 
-        private final String label;
+        @NonNull
+        private String label;
 
-        private final float score;
+        @NonNull
+        private float score;
 
     }
 
