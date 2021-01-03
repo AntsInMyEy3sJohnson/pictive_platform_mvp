@@ -28,13 +28,14 @@ public class Collection {
     @EqualsAndHashCode.Include
     @NonNull
     @Id
+    @Column(columnDefinition = "uuid", updatable = false)
     private UUID id;
 
     @NonNull
     private boolean defaultCollection;
 
     @NonNull
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Fetch(FetchMode.JOIN)
     @JoinTable(name = "contained_images",
             joinColumns = {@JoinColumn(name = "fk_collection")},

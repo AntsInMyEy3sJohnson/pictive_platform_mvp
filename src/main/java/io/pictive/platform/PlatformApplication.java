@@ -21,6 +21,7 @@ public class PlatformApplication {
 	@Bean
 	public CommandLineRunner commandLineRunner(UserRepository userRepository) {
 
+		// Add some dummy data
 		return args -> {
 
 			var john = User.withProperties("john@example.org");
@@ -30,15 +31,21 @@ public class PlatformApplication {
 			var defaultCollectionJohn = Collection.withProperties(displayNameTemplate + john.getMail());
 			var defaultCollectionJane = Collection.withProperties(displayNameTemplate + jane.getMail());
 
-			setUserCollectionReferences(john, defaultCollectionJohn);
-			setUserCollectionReferences(jane, defaultCollectionJane);
+			setUserDefaultCollectionReferences(john, defaultCollectionJohn);
+			setUserDefaultCollectionReferences(jane, defaultCollectionJane);
 
 			var image1 = Image.withProperties("some base64 payload");
 			var image2 = Image.withProperties("some other base64 payload");
 			var image3 = Image.withProperties("yet another base64 payload");
 
-			defaultCollectionJohn.getImages().addAll(Set.of(image1, image2, image3));
-			defaultCollectionJohn.getImages().forEach(i -> i.getContainedInCollections().add(defaultCollectionJohn));
+			var johnsImages = Set.of(image1, image2, image3);
+
+			john.getOwnedImages().addAll(johnsImages);
+			defaultCollectionJohn.getImages().addAll(johnsImages);
+			defaultCollectionJohn.getImages().forEach(image -> {
+				image.getContainedInCollections().add(defaultCollectionJohn);
+				image.setOwner(defaultCollectionJohn.getOwner());
+			});
 
 			userRepository.saveAll(Arrays.asList(john, jane));
 
@@ -46,7 +53,7 @@ public class PlatformApplication {
 
 	}
 
-	private void setUserCollectionReferences(User user, Collection collection) {
+	private void setUserDefaultCollectionReferences(User user, Collection collection) {
 
 		user.setDefaultCollection(collection);
 		user.getSharedCollections().add(collection);

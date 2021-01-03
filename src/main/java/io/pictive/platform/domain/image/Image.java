@@ -30,6 +30,7 @@ public class Image {
     @EqualsAndHashCode.Include
     @NonNull
     @Id
+    @Column(columnDefinition = "uuid", updatable = false)
     private UUID id;
 
     @NonNull
@@ -37,10 +38,13 @@ public class Image {
 
     private String extractedText;
 
+    @ManyToOne
+    private User owner;
+
     @NonNull
     @Embedded
     @ElementCollection(targetClass = ScoredLabel.class)
-    @Fetch(FetchMode.SUBSELECT)
+    @Fetch(FetchMode.JOIN)
     private List<ScoredLabel> scoredLabels;
 
     @NonNull

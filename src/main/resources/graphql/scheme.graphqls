@@ -1,0 +1,56 @@
+# User
+type UserBag {
+    users: [User!]
+}
+
+type User {
+    id: ID!
+    mail: String!
+    ownedCollections: [Collection!]!
+    sharedCollections: [Collection!]!
+    defaultCollection: Collection!
+    ownedImages: [Image!]
+}
+
+# Collection
+type CollectionBag {
+    collections: [Collection!]
+}
+
+type Collection {
+    id: ID!
+    defaultCollection: Boolean!
+    images: [Image]!
+    sharedWith: [User!]!
+    owner: User!
+    displayName: String!
+    pin: Int!
+    nonOwnersCanShare: Boolean!
+    nonOwnersCanWrite: Boolean!
+}
+
+# Image
+type ImageBag {
+    images: [Image!]
+}
+
+type Image {
+    id: ID!
+    payload: String!
+    extractedText: String
+    scoredLabels: [ScoredLabel]!
+    containedInCollections: [Collection!]!
+    owner: User!
+}
+
+type ScoredLabel {
+    label: String!
+    score: Float!
+}
+
+# Root Query
+type Query {
+    getUsers: UserBag!
+    getCollections: CollectionBag!
+    getImages: ImageBag!
+}

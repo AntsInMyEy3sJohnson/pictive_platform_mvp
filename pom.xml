@@ -19,6 +19,7 @@
 		<java.version>14</java.version>
 		<graphql-starter-version>7.2.0</graphql-starter-version>
 		<graphql-tools-version>6.2.0</graphql-tools-version>
+		<graphiql-starter-version>7.2.0</graphiql-starter-version>
 		<json-unit-version>2.19.0</json-unit-version>
 		<spring-gcp-dependencies-version>1.2.5.RELEASE</spring-gcp-dependencies-version>
 	</properties>
@@ -52,6 +53,11 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>com.graphql-java-kickstart</groupId>
+			<artifactId>graphiql-spring-boot-starter</artifactId>
+			<version>${graphiql-starter-version}</version>
 		</dependency>
 
 		<!-- Persistence -->
