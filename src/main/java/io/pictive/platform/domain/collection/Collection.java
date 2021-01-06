@@ -19,9 +19,11 @@ import java.util.UUID;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Collection {
 
-    public static Collection withProperties(String displayName) {
+    public static Collection withProperties(String displayName, boolean defaultCollection, int pin,
+                                            boolean nonOwnersCanShare, boolean nonOwnersCanWrite) {
 
-        return new Collection(UUID.randomUUID(), true, new HashSet<>(), new HashSet<>(), displayName);
+        return new Collection(UUID.randomUUID(), defaultCollection, new HashSet<>(), new HashSet<>(),
+                displayName, pin, nonOwnersCanShare, nonOwnersCanWrite);
 
     }
 
@@ -43,7 +45,7 @@ public class Collection {
     private Set<Image> images;
 
     @NonNull
-    @ManyToMany(mappedBy = "sharedCollections")
+    @ManyToMany(mappedBy = "sharedCollections", cascade = CascadeType.MERGE)
     @Fetch(FetchMode.JOIN)
     private Set<User> sharedWith;
 
@@ -53,10 +55,13 @@ public class Collection {
     @NonNull
     private String displayName;
 
+    @NonNull
     private int pin;
 
+    @NonNull
     private boolean nonOwnersCanShare;
 
+    @NonNull
     private boolean nonOwnersCanWrite;
 
 }

@@ -54,3 +54,11 @@ type Query {
     getCollections: CollectionBag!
     getImages: ImageBag!
 }
+
+# Root Mutation
+type Mutation {
+    createUserWithDefaultCollection(mail: String!): UserBag!
+    createCollection(ownerID: ID!, displayName: String!, pin: Int!, nonOwnersCanShare: Boolean!, nonOwnersCanWrite:
+    Boolean!): CollectionBag!
+    createImages(ownerID: ID!, base64Payloads: [String!]!): ImageBag!
+}

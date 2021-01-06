@@ -23,7 +23,7 @@ public class Image {
 
     public static Image withProperties(String payload) {
 
-        return new Image(UUID.randomUUID(), payload, List.of(new ScoredLabel("kitten", 1.0f)), new HashSet<>());
+        return new Image(UUID.randomUUID(), payload, new HashSet<>());
 
     }
 
@@ -41,14 +41,13 @@ public class Image {
     @ManyToOne
     private User owner;
 
-    @NonNull
     @Embedded
     @ElementCollection(targetClass = ScoredLabel.class)
     @Fetch(FetchMode.JOIN)
     private List<ScoredLabel> scoredLabels;
 
     @NonNull
-    @ManyToMany(mappedBy = "images")
+    @ManyToMany(mappedBy = "images", cascade = CascadeType.MERGE)
     @Fetch(FetchMode.JOIN)
     private Set<Collection> containedInCollections;
 
