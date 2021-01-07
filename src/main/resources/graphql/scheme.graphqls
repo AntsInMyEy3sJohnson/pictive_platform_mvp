@@ -60,5 +60,6 @@ type Mutation {
     createUserWithDefaultCollection(mail: String!): UserBag!
     createCollection(ownerID: ID!, displayName: String!, pin: Int!, nonOwnersCanShare: Boolean!, nonOwnersCanWrite:
     Boolean!): CollectionBag!
+    shareCollection(collectionID: ID!, ownerID: ID!, userIDs: [ID!]!): CollectionBag!
     createImages(ownerID: ID!, base64Payloads: [String!]!): ImageBag!
 }

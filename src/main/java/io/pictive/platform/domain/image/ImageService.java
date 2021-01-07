@@ -2,6 +2,7 @@ package io.pictive.platform.domain.image;
 
 import io.pictive.platform.domain.collection.Collection;
 import io.pictive.platform.domain.user.User;
+import io.pictive.platform.persistence.FinderService;
 import io.pictive.platform.persistence.ImageRepository;
 import io.pictive.platform.persistence.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +19,11 @@ public class ImageService {
     private final ImageLabelingService imageLabelingService;
     private final ImageRepository imageRepository;
     private final UserRepository userRepository;
+    private final FinderService<User> userFinderService;
 
     public List<Image> create(UUID ownerID, List<String> base64Payloads) {
 
-        var owner = userRepository.findById(ownerID).orElseThrow(() -> new IllegalStateException("No such user: " + ownerID.toString()));
+        var owner = userFinderService.findOrThrow(ownerID, userRepository::findById, () -> new IllegalStateException("No such user: " + ownerID));
 
         var images = base64Payloads.stream()
                 .map(Image::withProperties)

@@ -1,6 +1,7 @@
 package io.pictive.platform.domain.image;
 
 
+import io.pictive.platform.domain.DomainObject;
 import io.pictive.platform.domain.collection.Collection;
 import io.pictive.platform.domain.user.User;
 import lombok.*;
@@ -18,8 +19,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Image {
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
+public class Image extends DomainObject {
 
     public static Image withProperties(String payload) {
 

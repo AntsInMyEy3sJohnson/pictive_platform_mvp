@@ -1,18 +1,19 @@
 package io.pictive.platform.domain.user;
 
 import io.pictive.platform.domain.collection.Collection;
+import io.pictive.platform.persistence.FinderService;
 import io.pictive.platform.persistence.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
+    private FinderService<User> userFinderService;
 
     public User createWithDefaultCollection(String mail) {
 
@@ -36,12 +37,6 @@ public class UserService {
     public List<User> getAll() {
 
         return userRepository.findAll();
-
-    }
-
-    public User getByID(UUID id) {
-
-        return userRepository.findById(id).orElseThrow(() -> new IllegalStateException("No such user: " + id.toString()));
 
     }
 

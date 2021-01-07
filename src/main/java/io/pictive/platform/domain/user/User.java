@@ -1,5 +1,6 @@
 package io.pictive.platform.domain.user;
 
+import io.pictive.platform.domain.DomainObject;
 import io.pictive.platform.domain.collection.Collection;
 import io.pictive.platform.domain.image.Image;
 import lombok.*;
@@ -16,8 +17,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class User {
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
+public class User extends DomainObject {
 
     public static User withProperties(String mail) {
 

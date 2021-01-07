@@ -1,5 +1,6 @@
 package io.pictive.platform.domain.collection;
 
+import io.pictive.platform.domain.DomainObject;
 import io.pictive.platform.domain.image.Image;
 import io.pictive.platform.domain.user.User;
 import lombok.*;
@@ -16,8 +17,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Collection {
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
+public class Collection extends DomainObject {
 
     public static Collection withProperties(String displayName, boolean defaultCollection, int pin,
                                             boolean nonOwnersCanShare, boolean nonOwnersCanWrite) {
