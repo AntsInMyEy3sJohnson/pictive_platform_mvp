@@ -1,6 +1,7 @@
 package io.pictive.platform.domain.collection;
 
-import io.pictive.platform.persistence.DataAccessService;
+import io.pictive.platform.domain.user.User;
+import io.pictive.platform.persistence.PersistenceAccessService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,13 +13,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CollectionService {
 
-    private final DataAccessService dataAccessService;
+    private final PersistenceAccessService<Collection> collectionPersistenceAccessService;
+    private final PersistenceAccessService<User> userPersistenceAccessService;
 
     public Collection share(UUID collectionID, UUID ownerID, List<UUID> userIDs) {
 
-        var collection = dataAccessService.findCollection(collectionID);
+        var collection = collectionPersistenceAccessService.find(collectionID);
 
-        var owner = dataAccessService.findUser(ownerID);
+        var owner = userPersistenceAccessService.find(ownerID);
 
         if (!(collection.getOwner().equals(owner) || collection.isNonOwnersCanShare())) {
             throw new IllegalStateException(String.format("Unable to share collection: User '%s' does not own collection " +
@@ -26,13 +28,13 @@ public class CollectionService {
         }
 
         var users = userIDs.stream()
-                .map(dataAccessService::findUser)
+                .map(userPersistenceAccessService::find)
                 .collect(Collectors.toSet());
 
         collection.getSharedWith().addAll(users);
         users.forEach(user -> user.getSharedCollections().add(collection));
 
-        dataAccessService.saveCollection(collection);
+        collectionPersistenceAccessService.persist(collection);
 
         return collection;
 
@@ -41,7 +43,7 @@ public class CollectionService {
 
     public Collection create(UUID ownerID, String displayName, int pin, boolean nonOwnersCanShare, boolean nonOwnersCanWrite) {
 
-        var owner = dataAccessService.findUser(ownerID);
+        var owner = userPersistenceAccessService.find(ownerID);
 
         var collection = Collection.withProperties(displayName, false, pin, nonOwnersCanShare, nonOwnersCanWrite);
         collection.setOwner(owner);
@@ -50,7 +52,7 @@ public class CollectionService {
         owner.getOwnedCollections().add(collection);
         owner.getSharedCollections().add(collection);
 
-        dataAccessService.saveCollection(collection);
+        collectionPersistenceAccessService.persist(collection);
 
         return collection;
 
@@ -58,7 +60,7 @@ public class CollectionService {
 
     public List<Collection> getAll() {
 
-        return dataAccessService.getAllCollections();
+        return collectionPersistenceAccessService.findAll();
 
     }
 

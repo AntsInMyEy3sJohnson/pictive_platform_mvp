@@ -2,7 +2,7 @@ package io.pictive.platform.domain.image;
 
 import io.pictive.platform.domain.collection.Collection;
 import io.pictive.platform.domain.user.User;
-import io.pictive.platform.persistence.DataAccessService;
+import io.pictive.platform.persistence.PersistenceAccessService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,11 +16,14 @@ import java.util.stream.Collectors;
 public class ImageService {
 
     private final ImageLabelingService imageLabelingService;
-    private final DataAccessService dataAccessService;
+
+    private final PersistenceAccessService<User> userPersistenceAccessService;
+    private final PersistenceAccessService<Image> imagePersistenceAccessService;
+    private final PersistenceAccessService<Collection> collectionPersistenceAccessService;
 
     public List<Image> create(UUID ownerID, List<String> base64Payloads) {
 
-        var owner = dataAccessService.findUser(ownerID);
+        var owner = userPersistenceAccessService.find(ownerID);
 
         var images = base64Payloads.stream()
                 .map(Image::withProperties)
@@ -29,7 +32,7 @@ public class ImageService {
                 .collect(Collectors.toList());
         imageLabelingService.labelImages(images);
 
-        dataAccessService.saveImages(images);
+        imagePersistenceAccessService.persistAll(images);
 
         return images;
 
@@ -37,9 +40,9 @@ public class ImageService {
 
     public List<Image> getForUserInCollection(UUID userID, UUID collectionID) {
 
-        var user = dataAccessService.findUser(userID);
+        var user = userPersistenceAccessService.find(userID);
 
-        var collection = dataAccessService.findCollection(collectionID);
+        var collection = collectionPersistenceAccessService.find(collectionID);
 
         if (!user.getSharedCollections().contains(collection)) {
             throw new IllegalStateException("Unable to retrieve images from collection: Collection '%s' was not shared with user '%s'.");
@@ -51,7 +54,7 @@ public class ImageService {
 
     public List<Image> getAll() {
 
-        return dataAccessService.getAllImages();
+        return imagePersistenceAccessService.findAll();
 
     }
 
