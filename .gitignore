@@ -37,3 +37,6 @@ build/
 
 ### Credentials ###
 google-cloud-vision-credentials.json
+
+### Lucene indices ###
+lucene/

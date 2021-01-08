@@ -6,12 +6,20 @@ import io.pictive.platform.domain.image.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ImageQueryService implements GraphQLQueryResolver {
 
     private final ImageService imageService;
     private final UuidHelper uuidHelper;
+
+    public ImageBag searchImagesInCollections(String userID, List<String> collectionIDs, List<String> labels, String text, String searchMode) {
+
+        return ImageBag.of(imageService.search(uuidHelper.asUuid(userID), uuidHelper.asUuid(collectionIDs), labels, text, searchMode));
+
+    }
 
     public ImageBag getImagesForUserInCollection(String userID, String collectionID) {
 

@@ -9,6 +9,8 @@ public interface PersistenceProvider<T> {
 
     List<T> findAll();
 
+    List<T> findAll(Iterable<UUID> ids);
+
     void persist(T t);
 
     void persistAll(List<T> ts);

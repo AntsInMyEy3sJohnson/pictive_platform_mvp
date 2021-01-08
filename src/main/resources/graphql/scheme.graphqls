@@ -54,6 +54,8 @@ type Query {
     getCollections: CollectionBag!
     getImages: ImageBag!
     getImagesForUserInCollection(userID: ID!, collectionID: ID!): ImageBag!
+    searchImagesInCollections(userID: ID!, collectionIDs: [ID!]!, labels: [String!], text: String, searchMode:
+    String!): ImageBag!
 }
 
 # Root Mutation

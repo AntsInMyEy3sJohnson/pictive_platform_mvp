@@ -30,6 +30,13 @@ public class PersistenceContext<T extends DomainObject> implements PersistencePr
     }
 
     @Override
+    public List<T> findAll(Iterable<UUID> ids) {
+
+        return repository.findAllById(ids);
+
+    }
+
+    @Override
     public void persist(T t) {
 
         repository.save(t);

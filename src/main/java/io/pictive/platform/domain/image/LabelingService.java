@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class ImageLabelingService {
+public class LabelingService {
 
     private final ImageAnnotatorClientWrapper imageAnnotatorClientWrapper;
     private final Environment environment;
