@@ -12,6 +12,12 @@ import org.springframework.context.annotation.Bean;
 import java.util.Arrays;
 import java.util.Set;
 
+/**
+ * To prevent GCV dependencies from attempting to authenticate when a non-production Spring profile is active,
+ * add the following environment variables:
+ * <p>
+ * SPRING_PROFILES_ACTIVE=local;SPRING_CLOUD_GCP_VISION_ENABLED=false;SPRING_CLOUD_GCP_CORE_ENABLED=false
+ */
 @SpringBootApplication
 public class PlatformApplication {
 

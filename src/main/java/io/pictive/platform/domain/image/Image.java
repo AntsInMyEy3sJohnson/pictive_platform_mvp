@@ -35,6 +35,7 @@ public class Image extends DomainObject {
     private UUID id;
 
     @NonNull
+    @Lob
     private String payload;
 
     private String extractedText;
