@@ -3,7 +3,7 @@ package io.pictive.platform;
 import io.pictive.platform.domain.collection.Collection;
 import io.pictive.platform.domain.image.Image;
 import io.pictive.platform.domain.user.User;
-import io.pictive.platform.persistence.UserRepository;
+import io.pictive.platform.persistence.DataAccessService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -26,7 +26,7 @@ public class PlatformApplication {
     }
 
     @Bean
-    public CommandLineRunner commandLineRunner(UserRepository userRepository) {
+    public CommandLineRunner commandLineRunner(DataAccessService dataAccessService) {
 
         // Add some dummy data
         return args -> {
@@ -54,7 +54,7 @@ public class PlatformApplication {
                 image.setOwner(defaultCollectionJohn.getOwner());
             });
 
-            userRepository.saveAll(Arrays.asList(john, jane));
+            dataAccessService.saveUsers(Arrays.asList(john, jane));
 
         };
 

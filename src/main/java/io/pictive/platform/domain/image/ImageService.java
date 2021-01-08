@@ -2,10 +2,7 @@ package io.pictive.platform.domain.image;
 
 import io.pictive.platform.domain.collection.Collection;
 import io.pictive.platform.domain.user.User;
-import io.pictive.platform.persistence.CollectionRepository;
-import io.pictive.platform.persistence.FinderService;
-import io.pictive.platform.persistence.ImageRepository;
-import io.pictive.platform.persistence.UserRepository;
+import io.pictive.platform.persistence.DataAccessService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,16 +16,11 @@ import java.util.stream.Collectors;
 public class ImageService {
 
     private final ImageLabelingService imageLabelingService;
-    private final ImageRepository imageRepository;
-    private final UserRepository userRepository;
-    private final CollectionRepository collectionRepository;
-
-    private final FinderService<User> userFinderService;
-    private final FinderService<Collection> collectionFinderService;
+    private final DataAccessService dataAccessService;
 
     public List<Image> create(UUID ownerID, List<String> base64Payloads) {
 
-        var owner = userFinderService.findOrThrowWithMessage(ownerID, userRepository::findById, "No such user: " + ownerID);
+        var owner = dataAccessService.findUser(ownerID);
 
         var images = base64Payloads.stream()
                 .map(Image::withProperties)
@@ -37,7 +29,7 @@ public class ImageService {
                 .collect(Collectors.toList());
         imageLabelingService.labelImages(images);
 
-        imageRepository.saveAll(images);
+        dataAccessService.saveImages(images);
 
         return images;
 
@@ -45,9 +37,9 @@ public class ImageService {
 
     public List<Image> getForUserInCollection(UUID userID, UUID collectionID) {
 
-        var user = userFinderService.findOrThrowWithMessage(userID, userRepository::findById, "No such user: " + userID);
+        var user = dataAccessService.findUser(userID);
 
-        var collection = collectionFinderService.findOrThrowWithMessage(collectionID, collectionRepository::findById, "No such collection: " + collectionID);
+        var collection = dataAccessService.findCollection(collectionID);
 
         if (!user.getSharedCollections().contains(collection)) {
             throw new IllegalStateException("Unable to retrieve images from collection: Collection '%s' was not shared with user '%s'.");
@@ -59,7 +51,7 @@ public class ImageService {
 
     public List<Image> getAll() {
 
-        return imageRepository.findAll();
+        return dataAccessService.getAllImages();
 
     }
 

@@ -1,8 +1,7 @@
 package io.pictive.platform.domain.user;
 
 import io.pictive.platform.domain.collection.Collection;
-import io.pictive.platform.persistence.FinderService;
-import io.pictive.platform.persistence.UserRepository;
+import io.pictive.platform.persistence.DataAccessService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,8 +11,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository userRepository;
-    private FinderService<User> userFinderService;
+    private final DataAccessService dataAccessService;
 
     public User createWithDefaultCollection(String mail) {
 
@@ -28,7 +26,7 @@ public class UserService {
         collection.setOwner(user);
         collection.getSharedWith().add(user);
 
-        userRepository.save(user);
+        dataAccessService.saveUser(user);
 
         return user;
 
@@ -36,7 +34,7 @@ public class UserService {
 
     public List<User> getAll() {
 
-        return userRepository.findAll();
+        return dataAccessService.getAllUsers();
 
     }
 

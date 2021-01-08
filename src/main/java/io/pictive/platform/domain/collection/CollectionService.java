@@ -1,9 +1,6 @@
 package io.pictive.platform.domain.collection;
 
-import io.pictive.platform.domain.user.User;
-import io.pictive.platform.persistence.CollectionRepository;
-import io.pictive.platform.persistence.FinderService;
-import io.pictive.platform.persistence.UserRepository;
+import io.pictive.platform.persistence.DataAccessService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,18 +12,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CollectionService {
 
-    private final UserRepository userRepository;
-    private final CollectionRepository collectionRepository;
-
-    private final FinderService<Collection> collectionFinderService;
-    private final FinderService<User> userFinderService;
-
+    private final DataAccessService dataAccessService;
 
     public Collection share(UUID collectionID, UUID ownerID, List<UUID> userIDs) {
 
-        var collection = collectionFinderService.findOrThrowWithMessage(collectionID, collectionRepository::findById, "No such collection: " + collectionID);
+        var collection = dataAccessService.findCollection(collectionID);
 
-        var owner = userFinderService.findOrThrowWithMessage(ownerID, userRepository::findById, "No such user: " + ownerID);
+        var owner = dataAccessService.findUser(ownerID);
 
         if (!(collection.getOwner().equals(owner) || collection.isNonOwnersCanShare())) {
             throw new IllegalStateException(String.format("Unable to share collection: User '%s' does not own collection " +
@@ -34,13 +26,13 @@ public class CollectionService {
         }
 
         var users = userIDs.stream()
-                .map(id -> userFinderService.findOrThrowWithMessage(id, userRepository::findById, "No such user: " + id))
+                .map(dataAccessService::findUser)
                 .collect(Collectors.toSet());
 
         collection.getSharedWith().addAll(users);
         users.forEach(user -> user.getSharedCollections().add(collection));
 
-        collectionRepository.save(collection);
+        dataAccessService.saveCollection(collection);
 
         return collection;
 
@@ -49,7 +41,7 @@ public class CollectionService {
 
     public Collection create(UUID ownerID, String displayName, int pin, boolean nonOwnersCanShare, boolean nonOwnersCanWrite) {
 
-        var owner = userFinderService.findOrThrowWithMessage(ownerID, userRepository::findById, "No such user: " + ownerID);
+        var owner = dataAccessService.findUser(ownerID);
 
         var collection = Collection.withProperties(displayName, false, pin, nonOwnersCanShare, nonOwnersCanWrite);
         collection.setOwner(owner);
@@ -58,7 +50,7 @@ public class CollectionService {
         owner.getOwnedCollections().add(collection);
         owner.getSharedCollections().add(collection);
 
-        collectionRepository.save(collection);
+        dataAccessService.saveCollection(collection);
 
         return collection;
 
@@ -66,7 +58,7 @@ public class CollectionService {
 
     public List<Collection> getAll() {
 
-        return collectionRepository.findAll();
+        return dataAccessService.getAllCollections();
 
     }
 
