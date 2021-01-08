@@ -24,9 +24,9 @@ public class CollectionService {
 
     public Collection share(UUID collectionID, UUID ownerID, List<UUID> userIDs) {
 
-        var collection = collectionFinderService.findOrThrow(collectionID, collectionRepository::findById, () -> new IllegalStateException("No such collection: " + collectionID));
+        var collection = collectionFinderService.findOrThrowWithMessage(collectionID, collectionRepository::findById, "No such collection: " + collectionID);
 
-        var owner = userFinderService.findOrThrow(ownerID, userRepository::findById, () -> new IllegalStateException("No such user: " + ownerID));
+        var owner = userFinderService.findOrThrowWithMessage(ownerID, userRepository::findById, "No such user: " + ownerID);
 
         if (!(collection.getOwner().equals(owner) || collection.isNonOwnersCanShare())) {
             throw new IllegalStateException(String.format("Unable to share collection: User '%s' does not own collection " +
@@ -34,7 +34,7 @@ public class CollectionService {
         }
 
         var users = userIDs.stream()
-                .map(id -> userFinderService.findOrThrow(id, userRepository::findById, () -> new IllegalStateException("No such user: " + id)))
+                .map(id -> userFinderService.findOrThrowWithMessage(id, userRepository::findById, "No such user: " + id))
                 .collect(Collectors.toSet());
 
         collection.getSharedWith().addAll(users);
@@ -49,7 +49,7 @@ public class CollectionService {
 
     public Collection create(UUID ownerID, String displayName, int pin, boolean nonOwnersCanShare, boolean nonOwnersCanWrite) {
 
-        var owner = userFinderService.findOrThrow(ownerID, userRepository::findById, () -> new IllegalStateException("No such user: " + ownerID));
+        var owner = userFinderService.findOrThrowWithMessage(ownerID, userRepository::findById, "No such user: " + ownerID);
 
         var collection = Collection.withProperties(displayName, false, pin, nonOwnersCanShare, nonOwnersCanWrite);
         collection.setOwner(owner);

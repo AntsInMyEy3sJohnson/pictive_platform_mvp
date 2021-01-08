@@ -53,6 +53,7 @@ type Query {
     getUsers: UserBag!
     getCollections: CollectionBag!
     getImages: ImageBag!
+    getImagesForUserInCollection(userID: ID!, collectionID: ID!): ImageBag!
 }
 
 # Root Mutation
@@ -61,5 +62,5 @@ type Mutation {
     createCollection(ownerID: ID!, displayName: String!, pin: Int!, nonOwnersCanShare: Boolean!, nonOwnersCanWrite:
     Boolean!): CollectionBag!
     shareCollection(collectionID: ID!, ownerID: ID!, userIDs: [ID!]!): CollectionBag!
-    createImages(ownerID: ID!, base64Payloads: [String!]!): ImageBag!
+    uploadImages(ownerID: ID!, base64Payloads: [String!]!): ImageBag!
 }

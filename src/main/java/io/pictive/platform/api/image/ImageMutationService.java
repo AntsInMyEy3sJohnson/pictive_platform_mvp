@@ -15,7 +15,7 @@ public class ImageMutationService implements GraphQLMutationResolver {
     private final ImageService imageService;
     private final UuidHelper uuidHelper;
 
-    public ImageBag createImages(String ownerID, List<String> base64Payloads) {
+    public ImageBag uploadImages(String ownerID, List<String> base64Payloads) {
 
         return ImageBag.of(imageService.create(uuidHelper.asUuid(ownerID), base64Payloads));
 

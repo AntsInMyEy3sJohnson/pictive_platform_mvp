@@ -2,12 +2,14 @@ package io.pictive.platform.domain.image;
 
 import io.pictive.platform.domain.collection.Collection;
 import io.pictive.platform.domain.user.User;
+import io.pictive.platform.persistence.CollectionRepository;
 import io.pictive.platform.persistence.FinderService;
 import io.pictive.platform.persistence.ImageRepository;
 import io.pictive.platform.persistence.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -19,11 +21,14 @@ public class ImageService {
     private final ImageLabelingService imageLabelingService;
     private final ImageRepository imageRepository;
     private final UserRepository userRepository;
+    private final CollectionRepository collectionRepository;
+
     private final FinderService<User> userFinderService;
+    private final FinderService<Collection> collectionFinderService;
 
     public List<Image> create(UUID ownerID, List<String> base64Payloads) {
 
-        var owner = userFinderService.findOrThrow(ownerID, userRepository::findById, () -> new IllegalStateException("No such user: " + ownerID));
+        var owner = userFinderService.findOrThrowWithMessage(ownerID, userRepository::findById, "No such user: " + ownerID);
 
         var images = base64Payloads.stream()
                 .map(Image::withProperties)
@@ -35,6 +40,20 @@ public class ImageService {
         imageRepository.saveAll(images);
 
         return images;
+
+    }
+
+    public List<Image> getForUserInCollection(UUID userID, UUID collectionID) {
+
+        var user = userFinderService.findOrThrowWithMessage(userID, userRepository::findById, "No such user: " + userID);
+
+        var collection = collectionFinderService.findOrThrowWithMessage(collectionID, collectionRepository::findById, "No such collection: " + collectionID);
+
+        if (!user.getSharedCollections().contains(collection)) {
+            throw new IllegalStateException("Unable to retrieve images from collection: Collection '%s' was not shared with user '%s'.");
+        }
+
+        return new ArrayList<>(collection.getImages());
 
     }
 
