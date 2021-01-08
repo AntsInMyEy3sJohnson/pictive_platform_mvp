@@ -10,7 +10,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 @RequiredArgsConstructor
-public class PersistenceAccessService<T extends DomainObject> implements PersistenceProvider<T> {
+public class PersistenceContext<T extends DomainObject> implements PersistenceProvider<T> {
 
     private final JpaRepository<T, UUID> repository;
 

@@ -2,7 +2,7 @@ package io.pictive.platform.domain.image;
 
 import io.pictive.platform.domain.collection.Collection;
 import io.pictive.platform.domain.user.User;
-import io.pictive.platform.persistence.PersistenceAccessService;
+import io.pictive.platform.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,13 +17,13 @@ public class ImageService {
 
     private final ImageLabelingService imageLabelingService;
 
-    private final PersistenceAccessService<User> userPersistenceAccessService;
-    private final PersistenceAccessService<Image> imagePersistenceAccessService;
-    private final PersistenceAccessService<Collection> collectionPersistenceAccessService;
+    private final PersistenceContext<User> userPersistenceContext;
+    private final PersistenceContext<Image> imagePersistenceContext;
+    private final PersistenceContext<Collection> collectionPersistenceContext;
 
     public List<Image> create(UUID ownerID, List<String> base64Payloads) {
 
-        var owner = userPersistenceAccessService.find(ownerID);
+        var owner = userPersistenceContext.find(ownerID);
 
         var images = base64Payloads.stream()
                 .map(Image::withProperties)
@@ -32,7 +32,7 @@ public class ImageService {
                 .collect(Collectors.toList());
         imageLabelingService.labelImages(images);
 
-        imagePersistenceAccessService.persistAll(images);
+        imagePersistenceContext.persistAll(images);
 
         return images;
 
@@ -40,9 +40,9 @@ public class ImageService {
 
     public List<Image> getForUserInCollection(UUID userID, UUID collectionID) {
 
-        var user = userPersistenceAccessService.find(userID);
+        var user = userPersistenceContext.find(userID);
 
-        var collection = collectionPersistenceAccessService.find(collectionID);
+        var collection = collectionPersistenceContext.find(collectionID);
 
         if (!user.getSharedCollections().contains(collection)) {
             throw new IllegalStateException("Unable to retrieve images from collection: Collection '%s' was not shared with user '%s'.");
@@ -54,7 +54,7 @@ public class ImageService {
 
     public List<Image> getAll() {
 
-        return imagePersistenceAccessService.findAll();
+        return imagePersistenceContext.findAll();
 
     }
 

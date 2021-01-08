@@ -1,7 +1,7 @@
 package io.pictive.platform.domain.collection;
 
 import io.pictive.platform.domain.user.User;
-import io.pictive.platform.persistence.PersistenceAccessService;
+import io.pictive.platform.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,14 +13,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CollectionService {
 
-    private final PersistenceAccessService<Collection> collectionPersistenceAccessService;
-    private final PersistenceAccessService<User> userPersistenceAccessService;
+    private final PersistenceContext<Collection> collectionPersistenceContext;
+    private final PersistenceContext<User> userPersistenceContext;
 
     public Collection share(UUID collectionID, UUID ownerID, List<UUID> userIDs) {
 
-        var collection = collectionPersistenceAccessService.find(collectionID);
+        var collection = collectionPersistenceContext.find(collectionID);
 
-        var owner = userPersistenceAccessService.find(ownerID);
+        var owner = userPersistenceContext.find(ownerID);
 
         if (!(collection.getOwner().equals(owner) || collection.isNonOwnersCanShare())) {
             throw new IllegalStateException(String.format("Unable to share collection: User '%s' does not own collection " +
@@ -28,13 +28,13 @@ public class CollectionService {
         }
 
         var users = userIDs.stream()
-                .map(userPersistenceAccessService::find)
+                .map(userPersistenceContext::find)
                 .collect(Collectors.toSet());
 
         collection.getSharedWith().addAll(users);
         users.forEach(user -> user.getSharedCollections().add(collection));
 
-        collectionPersistenceAccessService.persist(collection);
+        collectionPersistenceContext.persist(collection);
 
         return collection;
 
@@ -43,7 +43,7 @@ public class CollectionService {
 
     public Collection create(UUID ownerID, String displayName, int pin, boolean nonOwnersCanShare, boolean nonOwnersCanWrite) {
 
-        var owner = userPersistenceAccessService.find(ownerID);
+        var owner = userPersistenceContext.find(ownerID);
 
         var collection = Collection.withProperties(displayName, false, pin, nonOwnersCanShare, nonOwnersCanWrite);
         collection.setOwner(owner);
@@ -52,7 +52,7 @@ public class CollectionService {
         owner.getOwnedCollections().add(collection);
         owner.getSharedCollections().add(collection);
 
-        collectionPersistenceAccessService.persist(collection);
+        collectionPersistenceContext.persist(collection);
 
         return collection;
 
@@ -60,7 +60,7 @@ public class CollectionService {
 
     public List<Collection> getAll() {
 
-        return collectionPersistenceAccessService.findAll();
+        return collectionPersistenceContext.findAll();
 
     }
 

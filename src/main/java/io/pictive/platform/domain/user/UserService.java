@@ -1,7 +1,7 @@
 package io.pictive.platform.domain.user;
 
 import io.pictive.platform.domain.collection.Collection;
-import io.pictive.platform.persistence.PersistenceAccessService;
+import io.pictive.platform.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +12,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final PersistenceAccessService<User> userPersistenceAccessService;
+    private final PersistenceContext<User> userPersistenceContext;
 
     public User createWithDefaultCollection(String mail) {
 
@@ -27,7 +27,7 @@ public class UserService {
         collection.setOwner(user);
         collection.getSharedWith().add(user);
 
-        userPersistenceAccessService.persist(user);
+        userPersistenceContext.persist(user);
 
         return user;
 
@@ -35,7 +35,7 @@ public class UserService {
 
     public List<User> getAll() {
 
-        return userPersistenceAccessService.findAll();
+        return userPersistenceContext.findAll();
 
     }
 

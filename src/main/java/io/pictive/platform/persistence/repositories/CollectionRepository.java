@@ -1,4 +1,4 @@
-package io.pictive.platform.persistence;
+package io.pictive.platform.persistence.repositories;
 
 import io.pictive.platform.domain.collection.Collection;
 import org.springframework.data.jpa.repository.JpaRepository;

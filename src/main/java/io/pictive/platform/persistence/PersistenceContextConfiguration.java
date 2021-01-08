@@ -16,28 +16,28 @@ import java.util.UUID;
 @Configuration
 @RequiredArgsConstructor
 @SuppressWarnings("unchecked")
-public class PersistenceAccessConfiguration {
+public class PersistenceContextConfiguration {
 
     private final List<JpaRepository<? extends DomainObject, UUID>> repositories;
 
     @Bean
-    public PersistenceAccessService<User> userPersistenceAccessService() {
+    public PersistenceContext<User> userPersistenceAccessService() {
 
-        return new PersistenceAccessService<>((JpaRepository<User, UUID>) retrieveDesiredRepository(User.class));
-
-    }
-
-    @Bean
-    public PersistenceAccessService<Collection> collectionPersistenceAccessService() {
-
-        return new PersistenceAccessService<>((JpaRepository<Collection, UUID>) retrieveDesiredRepository(Collection.class));
+        return new PersistenceContext<>((JpaRepository<User, UUID>) retrieveDesiredRepository(User.class));
 
     }
 
     @Bean
-    public PersistenceAccessService<Image> imagePersistenceAccessService() {
+    public PersistenceContext<Collection> collectionPersistenceAccessService() {
 
-        return new PersistenceAccessService<>((JpaRepository<Image, UUID>) retrieveDesiredRepository(Image.class));
+        return new PersistenceContext<>((JpaRepository<Collection, UUID>) retrieveDesiredRepository(Collection.class));
+
+    }
+
+    @Bean
+    public PersistenceContext<Image> imagePersistenceAccessService() {
+
+        return new PersistenceContext<>((JpaRepository<Image, UUID>) retrieveDesiredRepository(Image.class));
 
     }
 
