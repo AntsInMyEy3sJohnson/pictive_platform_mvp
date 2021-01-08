@@ -2,7 +2,7 @@ package io.pictive.platform.api.image;
 
 import graphql.kickstart.tools.GraphQLMutationResolver;
 import io.pictive.platform.api.UuidHelper;
-import io.pictive.platform.domain.image.ImageService;
+import io.pictive.platform.domain.images.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package io.pictive.platform.domain.image;
+package io.pictive.platform.domain.images;
 
 import com.google.api.client.util.Base64;
 import com.google.cloud.vision.v1.AnnotateImageRequest;

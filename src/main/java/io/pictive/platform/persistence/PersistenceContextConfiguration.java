@@ -1,9 +1,9 @@
 package io.pictive.platform.persistence;
 
 import io.pictive.platform.domain.DomainObject;
-import io.pictive.platform.domain.collection.Collection;
-import io.pictive.platform.domain.image.Image;
-import io.pictive.platform.domain.user.User;
+import io.pictive.platform.domain.collections.Collection;
+import io.pictive.platform.domain.images.Image;
+import io.pictive.platform.domain.users.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

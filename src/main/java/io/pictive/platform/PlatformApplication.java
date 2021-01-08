@@ -1,8 +1,8 @@
 package io.pictive.platform;
 
-import io.pictive.platform.domain.collection.Collection;
-import io.pictive.platform.domain.image.Image;
-import io.pictive.platform.domain.user.User;
+import io.pictive.platform.domain.collections.Collection;
+import io.pictive.platform.domain.images.Image;
+import io.pictive.platform.domain.users.User;
 import io.pictive.platform.persistence.PersistenceContext;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

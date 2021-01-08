@@ -1,7 +1,7 @@
 package io.pictive.platform.api.user;
 
 
-import io.pictive.platform.domain.user.User;
+import io.pictive.platform.domain.users.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

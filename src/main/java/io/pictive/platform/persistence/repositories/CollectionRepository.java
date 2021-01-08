@@ -1,6 +1,6 @@
 package io.pictive.platform.persistence.repositories;
 
-import io.pictive.platform.domain.collection.Collection;
+import io.pictive.platform.domain.collections.Collection;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

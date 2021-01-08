@@ -1,4 +1,4 @@
-package io.pictive.platform.domain.image;
+package io.pictive.platform.domain.images;
 
 import org.springframework.stereotype.Service;
 

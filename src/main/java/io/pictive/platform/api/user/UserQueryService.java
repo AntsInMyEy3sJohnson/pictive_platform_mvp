@@ -1,7 +1,7 @@
 package io.pictive.platform.api.user;
 
 import graphql.kickstart.tools.GraphQLQueryResolver;
-import io.pictive.platform.domain.user.UserService;
+import io.pictive.platform.domain.users.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

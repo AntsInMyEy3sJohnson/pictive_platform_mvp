@@ -1,8 +1,8 @@
-package io.pictive.platform.domain.user;
+package io.pictive.platform.domain.users;
 
 import io.pictive.platform.domain.DomainObject;
-import io.pictive.platform.domain.collection.Collection;
-import io.pictive.platform.domain.image.Image;
+import io.pictive.platform.domain.collections.Collection;
+import io.pictive.platform.domain.images.Image;
 import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;

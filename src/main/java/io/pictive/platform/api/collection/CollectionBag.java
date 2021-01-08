@@ -1,6 +1,6 @@
 package io.pictive.platform.api.collection;
 
-import io.pictive.platform.domain.collection.Collection;
+import io.pictive.platform.domain.collections.Collection;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

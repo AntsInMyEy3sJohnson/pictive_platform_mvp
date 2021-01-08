@@ -1,6 +1,6 @@
 package io.pictive.platform.api.image;
 
-import io.pictive.platform.domain.image.Image;
+import io.pictive.platform.domain.images.Image;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

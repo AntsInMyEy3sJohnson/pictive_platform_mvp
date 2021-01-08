@@ -1,6 +1,6 @@
-package io.pictive.platform.domain.user;
+package io.pictive.platform.domain.users;
 
-import io.pictive.platform.domain.collection.Collection;
+import io.pictive.platform.domain.collections.Collection;
 import io.pictive.platform.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
