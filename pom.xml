@@ -138,7 +138,7 @@
                 <configuration>
                     <from>
                         <image>
-                            adoptopenjdk:14.0.2_8-jre-hotspot-bionic@sha256:c88559b33658c49421171e5c119f694db0b73d8efa6c718f6b11452f45abac1f
+                            adoptopenjdk:11.0.11_9-jre-hotspot-focal@sha256:df316691a2c655de2f835a626f8611c74af67dad2cf92711f6608b54e5aa6c61
                         </image>
                     </from>
                     <to>
