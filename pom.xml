@@ -16,7 +16,7 @@
     <description>MVP of the Pictive platform.</description>
 
     <properties>
-        <java.version>14</java.version>
+        <java.version>11</java.version>
         <graphql-starter-version>7.2.0</graphql-starter-version>
         <graphql-tools-version>6.2.0</graphql-tools-version>
         <graphiql-starter-version>7.2.0</graphiql-starter-version>
