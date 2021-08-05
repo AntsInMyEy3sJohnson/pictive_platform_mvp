@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: pictive
-        image: "antsinmyey3sjohnson/pictive-platform-mvp:0.0.1-SNAPSHOT"
+        image: "antsinmyey3sjohnson/pictive-platform-mvp@sha256:2b76eb234e5a765c0161246a1116a2a873bf6dba7bb1a9ee26da5c5bc5228f0b"
         env:
         - name: JAVA_OPTS
           value: "-Xmx256m -Xms256m" 
