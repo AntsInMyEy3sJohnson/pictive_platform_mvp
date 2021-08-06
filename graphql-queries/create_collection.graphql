@@ -1,0 +1,17 @@
+mutation {
+    createCollection(
+        ownerID: "3244fa3f-622b-4e4a-93d1-b79819c9dca9",
+        displayName: "Doggos",
+        pin: 1234,
+        nonOwnersCanShare: false
+        nonOwnersCanWrite: false
+    ){
+        collections {
+            id
+            displayName
+            sharedWith{
+                mail
+            }
+        }
+    }
+}

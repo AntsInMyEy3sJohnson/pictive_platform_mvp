@@ -1,0 +1,14 @@
+query {
+    getCollections{
+        collections{
+            id
+            displayName
+            owner{
+                mail
+            }
+            images{
+                id
+            }
+        }
+    }
+}

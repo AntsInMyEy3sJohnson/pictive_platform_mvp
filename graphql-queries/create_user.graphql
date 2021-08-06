@@ -1,0 +1,11 @@
+mutation {
+    createUserWithDefaultCollection(mail: "dave@example.org") {
+        users {
+            id
+            mail
+            defaultCollection {
+                id
+            }
+        }
+    }
+}
