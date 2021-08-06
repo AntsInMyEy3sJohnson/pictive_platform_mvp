@@ -21,9 +21,9 @@ spec:
       containers:
       - name: pictive
         image: "antsinmyey3sjohnson/pictive-platform-mvp@sha256:2b76eb234e5a765c0161246a1116a2a873bf6dba7bb1a9ee26da5c5bc5228f0b"
-        env:
-        - name: JAVA_OPTS
-          value: "-Xmx256m -Xms256m" 
+        ports:
+        - containerPort: 8080
+          name: http
         resources:
           requests:
             cpu: 200m
@@ -31,4 +31,18 @@ spec:
           limits: 
             cpu: 200m
             memory: 300Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pictive
+  namespace: pictive-minimal
+spec:
+  selector:
+    app: pictive-platform
+  type: LoadBalancer
+  ports:
+  - port: 8080
+    targetPort: http
+
     
