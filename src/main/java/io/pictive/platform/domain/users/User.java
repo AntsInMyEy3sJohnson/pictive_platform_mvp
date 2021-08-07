@@ -20,9 +20,9 @@ import java.util.UUID;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 public class User extends DomainObject {
 
-    public static User withProperties(String mail) {
+    public static User withProperties(String mail, String password) {
 
-        return new User(UUID.randomUUID(), mail, new HashSet<>(), new HashSet<>(), new HashSet<>());
+        return new User(UUID.randomUUID(), mail, password, new HashSet<>(), new HashSet<>(), new HashSet<>());
 
     }
 
@@ -34,6 +34,9 @@ public class User extends DomainObject {
 
     @NonNull
     private String mail;
+
+    @NonNull
+    private String password;
 
     @NonNull
     @OneToMany(mappedBy = "owner", cascade = {CascadeType.PERSIST, CascadeType.MERGE})

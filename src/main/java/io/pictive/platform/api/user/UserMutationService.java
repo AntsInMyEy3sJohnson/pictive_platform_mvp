@@ -13,9 +13,9 @@ public class UserMutationService implements GraphQLMutationResolver {
 
     private final UserService userService;
 
-    public UserBag createUserWithDefaultCollection(String mail) {
+    public UserBag createUserWithDefaultCollection(String mail, String password) {
 
-        return UserBag.of(Collections.singletonList(userService.createWithDefaultCollection(mail)));
+        return UserBag.of(Collections.singletonList(userService.createWithDefaultCollection(mail, password)));
 
     }
 

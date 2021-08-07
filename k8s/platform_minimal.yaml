@@ -24,6 +24,13 @@ spec:
         ports:
         - containerPort: 8080
           name: http
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: local
+        - name: SPRING_CLOUD_GCP_VISION_ENABLED
+          value: "false"
+        - name: SPRING_CLOUD_GCP_CORE_ENABLED
+          value: "false"
         resources:
           requests:
             cpu: 200m

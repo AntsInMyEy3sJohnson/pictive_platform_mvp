@@ -14,9 +14,9 @@ public class UserService {
 
     private final PersistenceContext<User> userPersistenceContext;
 
-    public User createWithDefaultCollection(String mail) {
+    public User createWithDefaultCollection(String mail, String password) {
 
-        var user = User.withProperties(mail);
+        var user = User.withProperties(mail, password);
         var collection = Collection.withProperties("Default collection of " + mail, true, -1,
                 false, false);
 

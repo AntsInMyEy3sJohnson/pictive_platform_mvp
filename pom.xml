@@ -11,7 +11,7 @@
 
     <groupId>io.pictive</groupId>
     <artifactId>pictive-platform-mvp</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2-SNAPSHOT</version>
     <name>pictive-platform-mvp</name>
     <description>MVP of the Pictive platform.</description>
 
