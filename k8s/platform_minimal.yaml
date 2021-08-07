@@ -21,7 +21,7 @@ spec:
       containers:
       - name: pictive
         # v0.0.2-SNAPSHOT
-        image: "antsinmyey3sjohnson/pictive-platform-mvp@sha256:0de6542ec7e49140055a6c0a544fc9a128c1f6777ae24ea2f8e2011cb2d6d1d1"
+        image: "antsinmyey3sjohnson/pictive-platform-mvp@sha256:da60d9f7a79f466a83c9d24a7470b0cc6beec51824f3ef60a3e81afb4c786187"
         ports:
         - containerPort: 8080
           name: http
