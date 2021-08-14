@@ -64,4 +64,10 @@ public class CollectionService {
 
     }
 
+    public Collection getByID(UUID id) {
+
+        return collectionPersistenceContext.find(id);
+
+    }
+
 }
