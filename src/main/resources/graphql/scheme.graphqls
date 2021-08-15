@@ -51,6 +51,7 @@ type ScoredLabel {
 # Root Query
 type Query {
     getUsers: UserBag!
+    getUserByMail(mail: String!): UserBag!,
     getCollections: CollectionBag!
     getCollectionByID(id: ID!): CollectionBag!
     getImages: ImageBag!

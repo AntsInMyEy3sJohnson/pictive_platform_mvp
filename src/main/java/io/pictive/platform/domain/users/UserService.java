@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 
 @Service
@@ -31,6 +32,15 @@ public class UserService {
 
         return user;
 
+    }
+
+    public User getByMail(String mail) throws Throwable {
+
+        return userPersistenceContext.findAll()
+                .stream()
+                .filter(user -> user.getMail().equals(mail))
+                .findAny()
+                .orElseThrow((Supplier<Throwable>) () -> new IllegalArgumentException("No such user with mail: " + mail));
     }
 
     public List<User> getAll() {

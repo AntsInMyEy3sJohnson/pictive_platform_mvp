@@ -5,6 +5,8 @@ import io.pictive.platform.domain.users.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+
 @Service
 @RequiredArgsConstructor
 public class UserQueryService implements GraphQLQueryResolver {
@@ -14,6 +16,12 @@ public class UserQueryService implements GraphQLQueryResolver {
     public UserBag getUsers() {
 
         return UserBag.of(userService.getAll());
+
+    }
+
+    public UserBag getUserByMail(String mail) throws Throwable {
+
+        return UserBag.of(Collections.singletonList(userService.getByMail(mail)));
 
     }
 
