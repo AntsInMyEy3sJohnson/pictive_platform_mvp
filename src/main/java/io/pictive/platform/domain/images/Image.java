@@ -22,9 +22,9 @@ import java.util.UUID;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 public class Image extends DomainObject {
 
-    public static Image withProperties(String payload) {
+    public static Image withProperties(String payload, String preview) {
 
-        return new Image(UUID.randomUUID(), payload, new HashSet<>());
+        return new Image(UUID.randomUUID(), payload, preview, new HashSet<>());
 
     }
 
@@ -37,6 +37,10 @@ public class Image extends DomainObject {
     @NonNull
     @Lob
     private String payload;
+
+    @NonNull
+    @Lob
+    private String preview;
 
     private String extractedText;
 

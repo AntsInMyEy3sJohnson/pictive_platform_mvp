@@ -1,13 +1,19 @@
 package io.pictive.platform.domain.images;
 
 import io.pictive.platform.domain.collections.Collection;
-import io.pictive.platform.domain.search.IndexMaintainer;
 import io.pictive.platform.domain.search.ImageSearcher;
+import io.pictive.platform.domain.search.IndexMaintainer;
 import io.pictive.platform.domain.users.User;
 import io.pictive.platform.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -15,6 +21,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class ImageService {
 
     private final LabelingService labelingService;
@@ -46,7 +53,7 @@ public class ImageService {
         var owner = userPersistenceContext.find(ownerID);
 
         var images = base64Payloads.stream()
-                .map(Image::withProperties)
+                .map(payload -> Image.withProperties(payload, generatePayloadPreview(payload)))
                 .peek(image -> setImageToOwnerReference(image, owner))
                 .peek(image -> setImageToDefaultCollectionReference(image, owner.getDefaultCollection()))
                 .collect(Collectors.toList());
@@ -92,6 +99,27 @@ public class ImageService {
 
         image.getContainedInCollections().add(defaultCollection);
         defaultCollection.getImages().add(image);
+
+    }
+
+    private String generatePayloadPreview(String payload) {
+
+        BufferedImage originalImage = null;
+        try {
+            originalImage = ImageIO.read(new ByteArrayInputStream(payload.getBytes()));
+            java.awt.Image resizedImage = originalImage.getScaledInstance(100, 100, java.awt.Image.SCALE_FAST);
+
+            BufferedImage resultImage = new BufferedImage(resizedImage.getWidth(null),
+                    resizedImage.getHeight(null), originalImage.getType());
+
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ImageIO.write(resultImage, "png", byteArrayOutputStream);
+
+            return byteArrayOutputStream.toString();
+        } catch (IOException e) {
+            log.error("Unable to generate image preview: " + e.getMessage());
+            return payload;
+        }
 
     }
 
