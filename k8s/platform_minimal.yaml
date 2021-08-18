@@ -21,7 +21,17 @@ spec:
       containers:
       - name: pictive
         # v0.0.2-SNAPSHOT
-        image: "antsinmyey3sjohnson/pictive-platform-mvp@sha256:4543fdb49bd789b40f89f67292d9e246ab0327541240c5970da7e7198cc97c7e"
+        image: "antsinmyey3sjohnson/pictive-platform-mvp@sha256:d7b2f98b733c9abb900b097377485805db8afc2e58093371923d3c06ea02bdc6"
+        livenessProbe:
+          httpGet:
+            path: /actuator/health/liveness
+            port: http
+          initialDelaySeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /actuator/health/readiness
+            port: http
+          initialDelaySeconds: 30
         ports:
         - containerPort: 8080
           name: http
