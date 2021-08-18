@@ -55,7 +55,7 @@ public class ImageService {
 
         var images = base64Payloads.stream()
                 .map(this::decodeBase64)
-                .map(payload -> Image.withProperties(payload, generatePayloadPreview(payload)))
+                .map(Image::withProperties)
                 .peek(image -> setImageToOwnerReference(image, owner))
                 .peek(image -> setImageToDefaultCollectionReference(image, owner.getDefaultCollection()))
                 .collect(Collectors.toList());
@@ -101,27 +101,6 @@ public class ImageService {
 
         image.getContainedInCollections().add(defaultCollection);
         defaultCollection.getImages().add(image);
-
-    }
-
-    private String generatePayloadPreview(String payload) {
-
-        BufferedImage originalImage = null;
-        try {
-            originalImage = ImageIO.read(new ByteArrayInputStream(payload.getBytes()));
-            java.awt.Image resizedImage = originalImage.getScaledInstance(100, 100, java.awt.Image.SCALE_FAST);
-
-            BufferedImage resultImage = new BufferedImage(resizedImage.getWidth(null),
-                    resizedImage.getHeight(null), originalImage.getType());
-
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            ImageIO.write(resultImage, "png", byteArrayOutputStream);
-
-            return byteArrayOutputStream.toString();
-        } catch (IOException e) {
-            log.error("Unable to generate image preview: " + e.getMessage());
-            return payload;
-        }
 
     }
 
