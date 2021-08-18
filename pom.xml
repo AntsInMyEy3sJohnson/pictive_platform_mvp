@@ -24,8 +24,8 @@
         <spring-gcp-dependencies-version>1.2.5.RELEASE</spring-gcp-dependencies-version>
         <lucene.version>8.7.0</lucene.version>
         <google-jib-version>2.5.2</google-jib-version>
-        <java-xmx>256m</java-xmx>
-        <java-xms>256m</java-xms>
+        <java-xmx>400m</java-xmx>
+        <java-xms>400m</java-xms>
     </properties>
 
     <dependencies>
