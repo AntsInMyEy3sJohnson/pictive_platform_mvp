@@ -1,5 +1,6 @@
 package io.pictive.platform.domain.images;
 
+import com.google.api.client.util.Base64;
 import io.pictive.platform.domain.collections.Collection;
 import io.pictive.platform.domain.search.ImageSearcher;
 import io.pictive.platform.domain.search.IndexMaintainer;
@@ -53,6 +54,7 @@ public class ImageService {
         var owner = userPersistenceContext.find(ownerID);
 
         var images = base64Payloads.stream()
+                .map(this::decodeBase64)
                 .map(payload -> Image.withProperties(payload, generatePayloadPreview(payload)))
                 .peek(image -> setImageToOwnerReference(image, owner))
                 .peek(image -> setImageToDefaultCollectionReference(image, owner.getDefaultCollection()))
@@ -120,6 +122,16 @@ public class ImageService {
             log.error("Unable to generate image preview: " + e.getMessage());
             return payload;
         }
+
+    }
+
+    private String decodeBase64(String base64Payload) {
+
+        if (base64Payload.startsWith("data:")) {
+            base64Payload = base64Payload.substring(base64Payload.indexOf(",") + 1);
+        }
+
+        return new String(Base64.decodeBase64(base64Payload));
 
     }
 

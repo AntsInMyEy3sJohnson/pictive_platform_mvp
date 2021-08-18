@@ -21,7 +21,7 @@ spec:
       containers:
       - name: pictive
         # v0.0.2-SNAPSHOT
-        image: "antsinmyey3sjohnson/pictive-platform-mvp@sha256:9593ea1e333ed756a1ad1126da19945c76d6452d4d4259073dae3d6f79497958"
+        image: "antsinmyey3sjohnson/pictive-platform-mvp@sha256:4543fdb49bd789b40f89f67292d9e246ab0327541240c5970da7e7198cc97c7e"
         ports:
         - containerPort: 8080
           name: http
@@ -51,6 +51,7 @@ spec:
   type: LoadBalancer
   ports:
   - port: 8080
+    nodePort: 30080
     targetPort: http
 
     
