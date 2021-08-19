@@ -66,5 +66,5 @@ type Mutation {
     createCollection(ownerID: ID!, displayName: String!, pin: Int!, nonOwnersCanShare: Boolean!, nonOwnersCanWrite:
     Boolean!): CollectionBag!
     shareCollection(collectionID: ID!, ownerID: ID!, userIDs: [ID!]!): CollectionBag!
-    uploadImages(ownerID: ID!, base64Payloads: [String!]!): ImageBag!
+    uploadImages(ownerID: ID!, collectionID: ID!, base64Payloads: [String!]!): ImageBag!
 }

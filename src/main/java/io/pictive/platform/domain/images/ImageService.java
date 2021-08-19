@@ -1,6 +1,5 @@
 package io.pictive.platform.domain.images;
 
-import com.google.api.client.util.Base64;
 import io.pictive.platform.domain.collections.Collection;
 import io.pictive.platform.domain.search.ImageSearcher;
 import io.pictive.platform.domain.search.IndexMaintainer;
@@ -10,11 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -49,15 +43,15 @@ public class ImageService {
 
     }
 
-    public List<Image> create(UUID ownerID, List<String> base64Payloads) {
+    public List<Image> create(UUID ownerID, UUID collectionID, List<String> base64Payloads) {
 
         var owner = userPersistenceContext.find(ownerID);
+        var collection = collectionPersistenceContext.find(collectionID);
 
         var images = base64Payloads.stream()
-                .map(this::decodeBase64)
                 .map(Image::withProperties)
                 .peek(image -> setImageToOwnerReference(image, owner))
-                .peek(image -> setImageToDefaultCollectionReference(image, owner.getDefaultCollection()))
+                .peek(image -> setImageToCollectionReference(image, collection))
                 .collect(Collectors.toList());
         labelingService.labelImages(images);
         textExtractionService.extractAndAddText(images);
@@ -97,20 +91,10 @@ public class ImageService {
 
     }
 
-    private void setImageToDefaultCollectionReference(Image image, Collection defaultCollection) {
+    private void setImageToCollectionReference(Image image, Collection defaultCollection) {
 
         image.getContainedInCollections().add(defaultCollection);
         defaultCollection.getImages().add(image);
-
-    }
-
-    private String decodeBase64(String base64Payload) {
-
-        if (base64Payload.startsWith("data:")) {
-            base64Payload = base64Payload.substring(base64Payload.indexOf(",") + 1);
-        }
-
-        return new String(Base64.decodeBase64(base64Payload));
 
     }
 
