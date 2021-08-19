@@ -63,7 +63,7 @@ public class Image extends DomainObject {
         private String label;
 
         @NonNull
-        private float score;
+        private Float score;
 
     }
 

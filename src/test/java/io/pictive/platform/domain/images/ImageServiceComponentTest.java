@@ -8,48 +8,61 @@ import io.pictive.platform.persistence.PersistenceContext;
 import io.pictive.platform.testhelpers.PayloadGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
-public class ImageServiceUnitTest {
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {
+        ImageService.class,
+        LabelingService.class,
+        TextExtractionService.class,
+        IndexMaintainer.class,
+        ImageSearcher.class,
+        ImageAnnotatorClientConfiguration.class,
+        ImageAnnotatorClientWrapper.class}
+)
+public class ImageServiceComponentTest {
 
-    @Mock
+    @Autowired
+    private ImageService imageService;
+
+    @SpyBean
     private LabelingService labelingService;
 
-    @Mock
+    @SpyBean
     private TextExtractionService textExtractionService;
 
-    @Mock
+    @SpyBean
     private IndexMaintainer indexMaintainer;
 
-    @Mock
+    @SpyBean
     private ImageSearcher imageSearcher;
 
-    @Mock
+    @MockBean
     private PersistenceContext<User> userPersistenceContext;
 
-    @Mock
+    @MockBean
     private PersistenceContext<Image> imagePersistenceContext;
 
-    @Mock
+    @MockBean
     private PersistenceContext<Collection> collectionPersistenceContext;
 
+    @SuppressWarnings("unchecked")
     @Test
     void testImageCreation() throws IOException {
-
-        final ImageService imageService = new ImageService(labelingService, textExtractionService, indexMaintainer, imageSearcher, userPersistenceContext, imagePersistenceContext, collectionPersistenceContext);
 
         var user = User.withProperties("dummy@example.org", "s3cret");
         var collection = Collection.withProperties("Some default collection", true, 1234, false, false);
@@ -63,16 +76,19 @@ public class ImageServiceUnitTest {
 
         var dummyPayload = PayloadGenerator.dummyPayload();
 
-        final List<Image> images = imageService.create(ownerID, collectionID, Collections.singletonList(dummyPayload));
+        final List<Image> createdImages = imageService.create(ownerID, collectionID, Collections.singletonList(dummyPayload));
 
-        assertThat(images).hasSize(1);
-
-        var image = images.get(0);
-
-        assertThat(image.getPayload()).isEqualTo(dummyPayload);
-        assertThat(image.getOwner()).isEqualTo(user);
-        assertThat(image.getContainedInCollections()).containsOnly(collection);
+        assertThat(createdImages)
+                .allMatch(image -> image.getPayload().equals(dummyPayload))
+                .allMatch(image -> image.getOwner().equals(user))
+                .satisfies(images -> {
+                    assertThat(images).hasSize(1);
+                    assertThat(images).extracting(Image::getContainedInCollections).containsOnly(Set.of(collection));
+                });
+        assertThat(createdImages.get(0).getScoredLabels()).hasSize(2);
+        assertThat(createdImages.get(0).getScoredLabels()).allMatch(scoredLabel -> scoredLabel.getLabel().equals("kitten") || scoredLabel.getLabel().equals("awww"));
 
     }
+
 
 }
