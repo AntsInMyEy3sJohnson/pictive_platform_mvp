@@ -39,24 +39,31 @@ public class ImageServiceComponentTest {
     @Autowired
     private ImageService imageService;
 
+    @SuppressWarnings("unused")
     @SpyBean
     private LabelingService labelingService;
 
+    @SuppressWarnings("unused")
     @SpyBean
     private TextExtractionService textExtractionService;
 
+    @SuppressWarnings("unused")
     @SpyBean
     private IndexMaintainer indexMaintainer;
 
+    @SuppressWarnings("unused")
     @SpyBean
     private ImageSearcher imageSearcher;
 
+    @SuppressWarnings("unused")
     @MockBean
     private PersistenceContext<User> userPersistenceContext;
 
+    @SuppressWarnings("unused")
     @MockBean
     private PersistenceContext<Image> imagePersistenceContext;
 
+    @SuppressWarnings("unused")
     @MockBean
     private PersistenceContext<Collection> collectionPersistenceContext;
 
@@ -85,8 +92,10 @@ public class ImageServiceComponentTest {
                     assertThat(images).hasSize(1);
                     assertThat(images).extracting(Image::getContainedInCollections).containsOnly(Set.of(collection));
                 });
-        assertThat(createdImages.get(0).getScoredLabels()).hasSize(2);
-        assertThat(createdImages.get(0).getScoredLabels()).allMatch(scoredLabel -> scoredLabel.getLabel().equals("kitten") || scoredLabel.getLabel().equals("awww"));
+        assertThat(createdImages.get(0).getScoredLabels())
+                .hasSize(2);
+        assertThat(createdImages.get(0).getScoredLabels())
+                .allMatch(scoredLabel -> scoredLabel.getLabel().equals("kitten") || scoredLabel.getLabel().equals("awww"));
 
     }
 
