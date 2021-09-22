@@ -42,6 +42,7 @@ type Image {
     scoredLabels: [ScoredLabel]!
     containedInCollections: [Collection!]!
     owner: User!
+    creationTimestamp: Int!
 }
 
 type ScoredLabel {

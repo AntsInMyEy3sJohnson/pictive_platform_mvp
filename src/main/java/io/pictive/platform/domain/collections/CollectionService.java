@@ -46,7 +46,7 @@ public class CollectionService {
         var owner = userPersistenceContext.find(ownerID);
 
         var collection = Collection.withProperties(displayName, false, pin, nonOwnersCanShare,
-                nonOwnersCanWrite, System.currentTimeMillis());
+                nonOwnersCanWrite);
         collection.setOwner(owner);
         collection.getSharedWith().add(owner);
 

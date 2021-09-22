@@ -19,7 +19,7 @@ public class UserService {
 
         var user = User.withProperties(mail, password);
         var collection = Collection.withProperties("Default collection of " + mail, true, -1,
-                false, false, System.currentTimeMillis());
+                false, false);
 
         user.setDefaultCollection(collection);
         user.getOwnedCollections().add(collection);

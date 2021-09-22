@@ -24,7 +24,7 @@ public class Image extends DomainObject {
 
     public static Image withProperties(String payload) {
 
-        return new Image(UUID.randomUUID(), payload, new HashSet<>());
+        return new Image(UUID.randomUUID(), payload, new HashSet<>(), System.currentTimeMillis());
 
     }
 
@@ -52,6 +52,9 @@ public class Image extends DomainObject {
     @ManyToMany(mappedBy = "images", cascade = CascadeType.MERGE)
     @Fetch(FetchMode.JOIN)
     private Set<Collection> containedInCollections;
+
+    @NonNull
+    private long creationTimestamp;
 
     @Embeddable
     @NoArgsConstructor(access = AccessLevel.PRIVATE)

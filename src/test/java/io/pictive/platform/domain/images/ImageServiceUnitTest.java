@@ -53,7 +53,7 @@ public class ImageServiceUnitTest {
 
         var user = User.withProperties("dummy@example.org", "s3cret");
         var collection = Collection.withProperties("Some default collection", true,
-                1234, false, false, System.currentTimeMillis());
+                1234, false, false);
         user.setDefaultCollection(collection);
 
         when(userPersistenceContext.find(isA(UUID.class))).thenReturn(user);
