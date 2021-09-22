@@ -21,10 +21,10 @@ import java.util.UUID;
 public class Collection extends DomainObject {
 
     public static Collection withProperties(String displayName, boolean defaultCollection, int pin,
-                                            boolean nonOwnersCanShare, boolean nonOwnersCanWrite) {
+                                            boolean nonOwnersCanShare, boolean nonOwnersCanWrite, long creationTimestamp) {
 
         return new Collection(UUID.randomUUID(), defaultCollection, new HashSet<>(), new HashSet<>(),
-                displayName, pin, nonOwnersCanShare, nonOwnersCanWrite);
+                displayName, pin, nonOwnersCanShare, nonOwnersCanWrite, creationTimestamp);
 
     }
 
@@ -64,5 +64,8 @@ public class Collection extends DomainObject {
 
     @NonNull
     private boolean nonOwnersCanWrite;
+
+    @NonNull
+    private long creationTimestamp;
 
 }

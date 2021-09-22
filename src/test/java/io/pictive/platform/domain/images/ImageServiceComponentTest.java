@@ -72,7 +72,8 @@ public class ImageServiceComponentTest {
     void testImageCreation() throws IOException {
 
         var user = User.withProperties("dummy@example.org", "s3cret");
-        var collection = Collection.withProperties("Some default collection", true, 1234, false, false);
+        var collection = Collection.withProperties("Some default collection", true,
+                1234, false, false, System.currentTimeMillis());
         user.setDefaultCollection(collection);
 
         when(userPersistenceContext.find(isA(UUID.class))).thenReturn(user);

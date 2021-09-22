@@ -27,6 +27,7 @@ type Collection {
     pin: Int!
     nonOwnersCanShare: Boolean!
     nonOwnersCanWrite: Boolean!
+    creationTimestamp: Int!
 }
 
 # Image
