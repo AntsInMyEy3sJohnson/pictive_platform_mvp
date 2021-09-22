@@ -20,8 +20,8 @@ spec:
     spec:
       containers:
       - name: pictive
-        # v0.0.2-SNAPSHOT
-        image: "antsinmyey3sjohnson/pictive-platform-mvp@sha256:323b5d6e0bc19c2381f7ba9b14a989484020084aea226d1a8125f9869af24951"
+        # v0.0.3-SNAPSHOT
+        image: "antsinmyey3sjohnson/pictive-platform-mvp@sha256:d693c9356ca6743e02060dc4603ead121674549de98a285be76cb155251c7e41"
         livenessProbe:
           httpGet:
             path: /actuator/health/liveness

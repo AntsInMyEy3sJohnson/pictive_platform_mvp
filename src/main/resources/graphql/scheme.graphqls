@@ -27,7 +27,7 @@ type Collection {
     pin: Int!
     nonOwnersCanShare: Boolean!
     nonOwnersCanWrite: Boolean!
-    creationTimestamp: Int!
+    creationTimestamp: String!
 }
 
 # Image
@@ -42,7 +42,7 @@ type Image {
     scoredLabels: [ScoredLabel]!
     containedInCollections: [Collection!]!
     owner: User!
-    creationTimestamp: Int!
+    creationTimestamp: String!
 }
 
 type ScoredLabel {
