@@ -24,6 +24,7 @@ public class Image extends DomainObject {
 
     public static Image withProperties(String payload) {
 
+        // TODO Use timestamp on image itself rather than server-created  timestamp
         return new Image(UUID.randomUUID(), payload, new HashSet<>(), System.currentTimeMillis());
 
     }
