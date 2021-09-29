@@ -47,11 +47,13 @@ public class ImageService {
 
         var owner = userPersistenceContext.find(ownerID);
         var collection = collectionPersistenceContext.find(collectionID);
+        var defaultCollection = collectionPersistenceContext.find(owner.getDefaultCollection().getId());
 
         var images = base64Payloads.stream()
                 .map(Image::withProperties)
                 .peek(image -> setImageToOwnerReference(image, owner))
                 .peek(image -> setImageToCollectionReference(image, collection))
+                .peek(image -> setImageToCollectionReference(image, defaultCollection))
                 .collect(Collectors.toList());
         labelingService.labelImages(images);
         textExtractionService.extractAndAddText(images);
@@ -91,10 +93,10 @@ public class ImageService {
 
     }
 
-    private void setImageToCollectionReference(Image image, Collection defaultCollection) {
+    private void setImageToCollectionReference(Image image, Collection collection) {
 
-        image.getContainedInCollections().add(defaultCollection);
-        defaultCollection.getImages().add(image);
+        image.getContainedInCollections().add(collection);
+        collection.getImages().add(image);
 
     }
 

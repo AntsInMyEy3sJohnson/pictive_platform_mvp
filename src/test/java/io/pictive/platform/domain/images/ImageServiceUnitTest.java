@@ -12,14 +12,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -47,24 +45,43 @@ public class ImageServiceUnitTest {
     private PersistenceContext<Collection> collectionPersistenceContext;
 
     @Test
-    void testImageCreation() throws IOException {
+    void testCreateImageInDefaultCollection() throws IOException {
 
-        final ImageService imageService = new ImageService(labelingService, textExtractionService, indexMaintainer, imageSearcher, userPersistenceContext, imagePersistenceContext, collectionPersistenceContext);
+        final ImageService imageService = createImageService();
 
-        var user = User.withProperties("dummy@example.org", "s3cret");
-        var collection = Collection.withProperties("Some default collection", true,
-                1234, false, false);
-        user.setDefaultCollection(collection);
+        var user = createUser();
+        var defaultCollection = createCollection("Default collection", true);
+        user.setDefaultCollection(defaultCollection);
 
         when(userPersistenceContext.find(isA(UUID.class))).thenReturn(user);
-        when(collectionPersistenceContext.find(isA(UUID.class))).thenReturn(collection);
+        when(collectionPersistenceContext.find(isA(UUID.class))).thenReturn(defaultCollection);
 
-        var ownerID = UUID.randomUUID();
-        var collectionID = UUID.randomUUID();
+        final List<Image> images = imageService.create(user.getId(), defaultCollection.getId(), Collections.singletonList(PayloadGenerator.dummyPayload()));
+
+        var image = images.get(0);
+
+        assertThat(image.getContainedInCollections()).hasSize(1).containsOnly(defaultCollection);
+        assertThat(defaultCollection.getImages()).hasSize(1).containsOnly(image);
+
+    }
+
+    @Test
+    void testCreateImageInNonDefaultCollection() throws IOException {
+
+        final ImageService imageService = createImageService();
+
+        var user = createUser();
+        var defaultCollection = createCollection("Default collection", true);
+        var doggoCollection = createCollection("Doggos", false);
+        user.setDefaultCollection(defaultCollection);
+
+        when(userPersistenceContext.find(isA(UUID.class))).thenReturn(user);
+        when(collectionPersistenceContext.find(eq(defaultCollection.getId()))).thenReturn(defaultCollection);
+        when(collectionPersistenceContext.find(eq(doggoCollection.getId()))).thenReturn(doggoCollection);
 
         var dummyPayload = PayloadGenerator.dummyPayload();
 
-        final List<Image> images = imageService.create(ownerID, collectionID, Collections.singletonList(dummyPayload));
+        final List<Image> images = imageService.create(user.getId(), doggoCollection.getId(), Collections.singletonList(dummyPayload));
 
         assertThat(images).hasSize(1);
 
@@ -72,7 +89,25 @@ public class ImageServiceUnitTest {
 
         assertThat(image.getPayload()).isEqualTo(dummyPayload);
         assertThat(image.getOwner()).isEqualTo(user);
-        assertThat(image.getContainedInCollections()).containsOnly(collection);
+        assertThat(image.getContainedInCollections()).containsExactlyInAnyOrder(doggoCollection, defaultCollection);
+
+        assertThat(defaultCollection.getImages()).containsOnly(image);
+        assertThat(doggoCollection.getImages()).containsOnly(image);
+
+    }
+
+    private Collection createCollection(String name, boolean defaultCollection) {
+        return Collection.withProperties(name, defaultCollection, 1234, false, false);
+    }
+
+    private User createUser() {
+        return User.withProperties("dummy@example.org", "s3cret");
+    }
+
+    private ImageService createImageService() {
+
+        return new ImageService(labelingService, textExtractionService, indexMaintainer, imageSearcher,
+                userPersistenceContext, imagePersistenceContext, collectionPersistenceContext);
 
     }
 
