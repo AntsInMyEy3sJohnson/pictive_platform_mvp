@@ -62,7 +62,7 @@ public class ImageService {
 
         imagePersistenceContext.persistAll(images);
 
-        return images;
+        return imagePersistenceContext.findAll(images.stream().map(Image::getId).collect(Collectors.toList()));
 
     }
 

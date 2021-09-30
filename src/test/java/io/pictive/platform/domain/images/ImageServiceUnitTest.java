@@ -8,6 +8,8 @@ import io.pictive.platform.persistence.PersistenceContext;
 import io.pictive.platform.testhelpers.PayloadGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -17,7 +19,9 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,6 +48,9 @@ public class ImageServiceUnitTest {
     @Mock
     private PersistenceContext<Collection> collectionPersistenceContext;
 
+    @Captor
+    private ArgumentCaptor<List<Image>> imageArgumentCaptor;
+
     @Test
     void testCreateImageInDefaultCollection() throws IOException {
 
@@ -56,7 +63,10 @@ public class ImageServiceUnitTest {
         when(userPersistenceContext.find(isA(UUID.class))).thenReturn(user);
         when(collectionPersistenceContext.find(isA(UUID.class))).thenReturn(defaultCollection);
 
-        final List<Image> images = imageService.create(user.getId(), defaultCollection.getId(), Collections.singletonList(PayloadGenerator.dummyPayload()));
+        imageService.create(user.getId(), defaultCollection.getId(), Collections.singletonList(PayloadGenerator.dummyPayload()));
+        verify(imagePersistenceContext).persistAll(imageArgumentCaptor.capture());
+
+        final List<Image> images = imageArgumentCaptor.getValue();
 
         var image = images.get(0);
 
@@ -81,7 +91,10 @@ public class ImageServiceUnitTest {
 
         var dummyPayload = PayloadGenerator.dummyPayload();
 
-        final List<Image> images = imageService.create(user.getId(), doggoCollection.getId(), Collections.singletonList(dummyPayload));
+        imageService.create(user.getId(), doggoCollection.getId(), Collections.singletonList(dummyPayload));
+        verify(imagePersistenceContext).persistAll(imageArgumentCaptor.capture());
+
+        final List<Image> images = imageArgumentCaptor.getValue();
 
         assertThat(images).hasSize(1);
 

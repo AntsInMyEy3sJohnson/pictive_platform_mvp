@@ -8,6 +8,8 @@ import io.pictive.platform.persistence.PersistenceContext;
 import io.pictive.platform.testhelpers.PayloadGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -22,6 +24,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -67,6 +70,9 @@ public class ImageServiceComponentTest {
     @MockBean
     private PersistenceContext<Collection> collectionPersistenceContext;
 
+    @Captor
+    private ArgumentCaptor<List<Image>> imageArgumentCaptor;
+
     @SuppressWarnings("unchecked")
     @Test
     void testImageCreation() throws IOException {
@@ -84,7 +90,10 @@ public class ImageServiceComponentTest {
 
         var dummyPayload = PayloadGenerator.dummyPayload();
 
-        final List<Image> createdImages = imageService.create(ownerID, collectionID, Collections.singletonList(dummyPayload));
+        imageService.create(ownerID, collectionID, Collections.singletonList(dummyPayload));
+        verify(imagePersistenceContext).persistAll(imageArgumentCaptor.capture());
+
+        final List<Image> createdImages = imageArgumentCaptor.getValue();
 
         assertThat(createdImages)
                 .allMatch(image -> image.getPayload().equals(dummyPayload))
