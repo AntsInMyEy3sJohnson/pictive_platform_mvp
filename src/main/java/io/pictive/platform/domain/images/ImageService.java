@@ -46,8 +46,13 @@ public class ImageService {
     public List<Image> create(UUID ownerID, UUID collectionID, List<String> base64Payloads) {
 
         var owner = userPersistenceContext.find(ownerID);
-        var collection = collectionPersistenceContext.find(collectionID);
-        var defaultCollection = collectionPersistenceContext.find(owner.getDefaultCollection().getId());
+        // MUST NOT query these directly from the database, as tempting as it might be given I already have the IDs... once
+        // I have the User object, it will carry all nested objects (like collections), and querying them from the database
+        // will deliver objects the same in terms of the ID, but NOT the same in terms of object reference, leading to
+        // an IllegalStateException in Hibernate ("Multiple representations of the same entity being merged") when attempting
+        // to persist back the object tree
+        var collection = owner.getSharedCollections().stream().filter(c -> c.getId().equals(collectionID)).findAny().get();
+        var defaultCollection = owner.getSharedCollections().stream().filter(Collection::isDefaultCollection).findAny().get();
 
         var images = base64Payloads.stream()
                 .map(Image::withProperties)
