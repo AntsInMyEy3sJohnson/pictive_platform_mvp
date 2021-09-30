@@ -38,7 +38,7 @@ public class Collection extends DomainObject {
     private boolean defaultCollection;
 
     @NonNull
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @Fetch(FetchMode.JOIN)
     @JoinTable(name = "contained_images",
             joinColumns = {@JoinColumn(name = "fk_collection")},

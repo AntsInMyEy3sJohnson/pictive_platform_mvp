@@ -50,7 +50,7 @@ public class Image extends DomainObject {
     private List<ScoredLabel> scoredLabels;
 
     @NonNull
-    @ManyToMany(mappedBy = "images", cascade = CascadeType.MERGE)
+    @ManyToMany(mappedBy = "images", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @Fetch(FetchMode.JOIN)
     private Set<Collection> containedInCollections;
 
