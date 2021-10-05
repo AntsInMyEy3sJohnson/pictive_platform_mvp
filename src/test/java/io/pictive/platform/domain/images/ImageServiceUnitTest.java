@@ -59,9 +59,9 @@ public class ImageServiceUnitTest {
         var user = createUser();
         var defaultCollection = createCollection("Default collection", true);
         user.setDefaultCollection(defaultCollection);
+        user.getSharedCollections().add(defaultCollection);
 
         when(userPersistenceContext.find(isA(UUID.class))).thenReturn(user);
-        when(collectionPersistenceContext.find(isA(UUID.class))).thenReturn(defaultCollection);
 
         imageService.create(user.getId(), defaultCollection.getId(), Collections.singletonList(PayloadGenerator.dummyPayload()));
         verify(imagePersistenceContext).persistAll(imageArgumentCaptor.capture());
@@ -84,10 +84,9 @@ public class ImageServiceUnitTest {
         var defaultCollection = createCollection("Default collection", true);
         var doggoCollection = createCollection("Doggos", false);
         user.setDefaultCollection(defaultCollection);
+        user.getSharedCollections().addAll(List.of(defaultCollection, doggoCollection));
 
         when(userPersistenceContext.find(isA(UUID.class))).thenReturn(user);
-        when(collectionPersistenceContext.find(eq(defaultCollection.getId()))).thenReturn(defaultCollection);
-        when(collectionPersistenceContext.find(eq(doggoCollection.getId()))).thenReturn(doggoCollection);
 
         var dummyPayload = PayloadGenerator.dummyPayload();
 
