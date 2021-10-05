@@ -75,18 +75,19 @@ public class ImageServiceComponentTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    void testImageCreation() throws IOException {
+    void testCreateImageInDefaultCollection() throws IOException {
 
         var user = User.withProperties("dummy@example.org", "s3cret");
-        var collection = Collection.withProperties("Some default collection", true,
+        var defaultCollection = Collection.withProperties("Some default collection", true,
                 1234, false, false);
-        user.setDefaultCollection(collection);
+        user.setDefaultCollection(defaultCollection);
+        user.getSharedCollections().add(defaultCollection);
 
         when(userPersistenceContext.find(isA(UUID.class))).thenReturn(user);
-        when(collectionPersistenceContext.find(isA(UUID.class))).thenReturn(collection);
+        when(collectionPersistenceContext.find(isA(UUID.class))).thenReturn(defaultCollection);
 
-        var ownerID = UUID.randomUUID();
-        var collectionID = UUID.randomUUID();
+        var ownerID = user.getId();
+        var collectionID = defaultCollection.getId();
 
         var dummyPayload = PayloadGenerator.dummyPayload();
 
@@ -100,7 +101,7 @@ public class ImageServiceComponentTest {
                 .allMatch(image -> image.getOwner().equals(user))
                 .satisfies(images -> {
                     assertThat(images).hasSize(1);
-                    assertThat(images).extracting(Image::getContainedInCollections).containsOnly(Set.of(collection));
+                    assertThat(images).extracting(Image::getContainedInCollections).containsOnly(Set.of(defaultCollection));
                 });
         assertThat(createdImages.get(0).getScoredLabels())
                 .hasSize(2);
