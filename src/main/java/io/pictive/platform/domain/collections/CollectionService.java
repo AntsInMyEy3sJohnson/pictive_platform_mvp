@@ -1,11 +1,13 @@
 package io.pictive.platform.domain.collections;
 
+import io.pictive.platform.domain.images.Image;
 import io.pictive.platform.domain.users.User;
 import io.pictive.platform.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -15,6 +17,35 @@ public class CollectionService {
 
     private final PersistenceContext<Collection> collectionPersistenceContext;
     private final PersistenceContext<User> userPersistenceContext;
+    private final PersistenceContext<Image> imagePersistenceContext;
+
+    public void delete(UUID collectionID, boolean deleteContainedImages) {
+
+        if (!collectionPersistenceContext.exists(collectionID)) {
+            // TODO Introduce error handling
+            return;
+        }
+
+        var collection = collectionPersistenceContext.find(collectionID);
+
+        // Clear all image references pointing to this collection
+        collection.getImages().forEach(image -> image.getContainedInCollections().removeIf(c -> c.equals(collection)));
+        collection.getImages().clear();
+
+        // Clear all user references pointing to this collection
+        collection.getSharedWith().forEach(user -> {
+            user.getOwnedCollections().removeIf(c -> c.equals(collection));
+            user.getSharedCollections().removeIf(c -> c.equals(collection));
+        });
+        collection.getSharedWith().clear();
+
+        if (deleteContainedImages) {
+            imagePersistenceContext.deleteAll(collection.getImages());
+        }
+
+        collectionPersistenceContext.delete(collection);
+
+    }
 
     public Collection share(UUID collectionID, UUID ownerID, List<UUID> userIDs) {
 
@@ -65,9 +96,13 @@ public class CollectionService {
 
     }
 
-    public Collection getByID(UUID id) {
+    public Optional<Collection> getByID(UUID id) {
 
-        return collectionPersistenceContext.find(id);
+        if (collectionPersistenceContext.exists(id)) {
+            return Optional.of(collectionPersistenceContext.find(id));
+        }
+
+        return Optional.empty();
 
     }
 

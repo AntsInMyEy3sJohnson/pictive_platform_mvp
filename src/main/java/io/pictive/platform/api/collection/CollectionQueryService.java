@@ -7,7 +7,10 @@ import io.pictive.platform.domain.collections.CollectionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +27,12 @@ public class CollectionQueryService implements GraphQLQueryResolver {
 
     public CollectionBag getCollectionByID(String id) {
 
-        return CollectionBag.of(Collections.singletonList(collectionService.getByID(uuidHelper.asUuid(id))));
+        final Optional<Collection> collectionOptional = collectionService.getByID(uuidHelper.asUuid(id));
+
+        final List<Collection> collections = new ArrayList<>();
+        collectionOptional.ifPresent(collections::add);
+
+        return CollectionBag.of(collections);
 
     }
 

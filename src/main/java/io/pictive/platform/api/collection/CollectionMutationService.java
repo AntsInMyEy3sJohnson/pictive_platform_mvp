@@ -16,6 +16,14 @@ public class CollectionMutationService implements GraphQLMutationResolver {
     private final CollectionService collectionService;
     private final UuidHelper uuidHelper;
 
+    public CollectionBag deleteCollection(String collectionID, boolean deleteContainedImages) {
+
+        collectionService.delete(uuidHelper.asUuid(collectionID), deleteContainedImages);
+
+        return CollectionBag.of(Collections.emptyList());
+
+    }
+
     public CollectionBag shareCollection(String collectionID, String ownerID, List<String> userIDs) {
 
         return CollectionBag.of(Collections.singletonList(collectionService.share(

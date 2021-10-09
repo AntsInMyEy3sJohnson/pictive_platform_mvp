@@ -15,6 +15,11 @@ public class PersistenceContext<T extends DomainObject> implements PersistencePr
     private final JpaRepository<T, UUID> repository;
 
     @Override
+    public boolean exists(UUID id) {
+        return repository.existsById(id);
+    }
+
+    @Override
     public T find(UUID id) {
 
         return repository.findById(id).orElseThrow(() ->
@@ -50,23 +55,26 @@ public class PersistenceContext<T extends DomainObject> implements PersistencePr
 
     }
 
-    private Supplier<IllegalStateException> exceptionWithMessage(String message) {
+    @Override
+    public void delete(T t) {
 
-        return () -> new IllegalStateException(message);
-
-    }
-
-    private String withIllegalArgument() {
-
-        return "Unable to perform persistence operation: No repository registered for generic type: "
-                + retrieveGenericType(getClass()).getType().getTypeName();
+        repository.delete(t);
 
     }
 
-    private ResolvableType retrieveGenericType(Class<?> clasz) {
+    @Override
+    public void deleteByID(UUID id) {
 
-        return ResolvableType.forClass(clasz).getGeneric(0);
+        repository.deleteById(id);
 
     }
+
+    @Override
+    public void deleteAll(Iterable<T> ts) {
+
+        repository.deleteAll(ts);
+
+    }
+
 
 }
