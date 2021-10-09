@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,6 +39,27 @@ public class PlatformTest {
 
     @Autowired
     private CollectionQueryService collectionQueryService;
+
+    @Test
+    void testDeleteCollectionWithDeletingImages() throws IOException {
+
+        String mail = "donna@example.org";
+        final User userBeforeDeletion = createUserAndGet(mail);
+        final String userID = userBeforeDeletion.getId().toString();
+
+        final Collection collection = createCollectionAndGet(userID);
+        final String collectionID = collection.getId().toString();
+
+        imageMutationService.uploadImages(userID, collectionID, List.of(PayloadGenerator.dummyPayload()));
+
+        assertThat(collectionMutationService.deleteCollection(collectionID, true).getCollections()).isEmpty();
+        assertThat(collectionQueryService.getCollectionByID(collectionID).getCollections()).isEmpty();
+
+        final Collection userDefaultCollection = collectionQueryService.getCollectionByID(userBeforeDeletion.getDefaultCollection().getId().toString()).getCollections().get(0);
+
+        assertThat(userDefaultCollection.getImages()).isEmpty();
+
+    }
 
     @Test
     void testDeleteCollectionWithoutDeletingImages() throws Throwable {

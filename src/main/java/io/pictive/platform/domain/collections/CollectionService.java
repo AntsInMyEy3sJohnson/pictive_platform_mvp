@@ -28,6 +28,15 @@ public class CollectionService {
 
         var collection = collectionPersistenceContext.find(collectionID);
 
+        if (deleteContainedImages) {
+            collection.getImages().forEach(image -> {
+                // Clear all collection references pointing to each image
+                image.getContainedInCollections().forEach(c -> c.getImages().removeIf(i -> i.equals(image)));
+                image.getContainedInCollections().clear();
+            });
+            imagePersistenceContext.deleteAll(collection.getImages());
+        }
+
         // Clear all image references pointing to this collection
         collection.getImages().forEach(image -> image.getContainedInCollections().removeIf(c -> c.equals(collection)));
         collection.getImages().clear();
@@ -38,10 +47,6 @@ public class CollectionService {
             user.getSharedCollections().removeIf(c -> c.equals(collection));
         });
         collection.getSharedWith().clear();
-
-        if (deleteContainedImages) {
-            imagePersistenceContext.deleteAll(collection.getImages());
-        }
 
         collectionPersistenceContext.delete(collection);
 
