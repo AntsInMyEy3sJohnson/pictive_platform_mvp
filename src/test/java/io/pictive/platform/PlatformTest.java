@@ -86,6 +86,8 @@ public class PlatformTest {
         // We have deleted the collection without deleting its images, so the default collection must still contain the image
         assertThat(userDefaultCollection.getImages()).hasSize(1);
 
+        assertThat(collectionQueryService.getCollections().getCollections()).hasSize(1);
+
     }
 
     @Test

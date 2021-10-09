@@ -39,7 +39,7 @@ public class User extends DomainObject {
     private String password;
 
     @NonNull
-    @OneToMany(mappedBy = "owner", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy = "owner", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     @Fetch(FetchMode.JOIN)
     private Set<Collection> ownedCollections;
 

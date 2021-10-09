@@ -67,6 +67,7 @@ type Mutation {
     createUserWithDefaultCollection(mail: String!, password: String!): UserBag!
     createCollection(ownerID: ID!, displayName: String!, pin: Int!, nonOwnersCanShare: Boolean!, nonOwnersCanWrite:
     Boolean!): CollectionBag!
+    deleteCollection(collectionID: ID!, deleteContainedImages: Boolean!): CollectionBag!
     shareCollection(collectionID: ID!, ownerID: ID!, userIDs: [ID!]!): CollectionBag!
     uploadImages(ownerID: ID!, collectionID: ID!, base64Payloads: [String!]!): ImageBag!
 }

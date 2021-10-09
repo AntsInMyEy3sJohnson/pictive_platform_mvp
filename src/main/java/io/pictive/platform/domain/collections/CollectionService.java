@@ -4,6 +4,7 @@ import io.pictive.platform.domain.images.Image;
 import io.pictive.platform.domain.users.User;
 import io.pictive.platform.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class CollectionService {
 
     private final PersistenceContext<Collection> collectionPersistenceContext;
@@ -22,7 +24,7 @@ public class CollectionService {
     public void delete(UUID collectionID, boolean deleteContainedImages) {
 
         if (!collectionPersistenceContext.exists(collectionID)) {
-            // TODO Introduce error handling
+            log.info("Unable to delete collection '{}': No such collection", collectionID);
             return;
         }
 
@@ -47,8 +49,13 @@ public class CollectionService {
             user.getSharedCollections().removeIf(c -> c.equals(collection));
         });
         collection.getSharedWith().clear();
+        var owner = collection.getOwner();
+        collection.setOwner(null);
+
+        userPersistenceContext.persist(owner);
 
         collectionPersistenceContext.delete(collection);
+        log.info("Successfully deleted collection '{}' ('{}').", collectionID, collection.getDisplayName());
 
     }
 
