@@ -52,6 +52,23 @@ public class ImageServiceUnitTest {
     private ArgumentCaptor<List<Image>> imageArgumentCaptor;
 
     @Test
+    void testCreateImageWithThumbnailInDefaultCollection() throws IOException {
+
+        final ImageService imageService = createImageService();
+
+        var user = createUser();
+        var defaultCollection = createCollection("Default collection", true);
+        user.setDefaultCollection(defaultCollection);
+        user.getSharedCollections().add(defaultCollection);
+
+        when(userPersistenceContext.find(isA(UUID.class))).thenReturn(user);
+
+        imageService.create(user.getId(), defaultCollection.getId(), List.of(PayloadGenerator.dummyPayloadWithThumbnail()));
+        verify(imagePersistenceContext).persistAll(imageArgumentCaptor.capture());
+
+    }
+
+    @Test
     void testCreateImageInDefaultCollection() throws IOException {
 
         final ImageService imageService = createImageService();

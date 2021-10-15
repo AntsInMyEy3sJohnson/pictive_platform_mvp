@@ -14,5 +14,17 @@ public class PayloadGenerator {
 
     }
 
+    public static String dummyPayloadWithThumbnail() throws IOException {
+
+        return dummyThumbnail() + dummyPayload();
+
+    }
+
+    public static String dummyThumbnail() {
+
+        return "THUMBNAIL_START:my_awesome_thumbnail:THUMBNAIL_END";
+
+    }
+
 
 }
