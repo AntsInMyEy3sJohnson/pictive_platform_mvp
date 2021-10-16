@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -52,7 +51,7 @@ public class ImageServiceUnitTest {
     private ArgumentCaptor<List<Image>> imageArgumentCaptor;
 
     @Test
-    void testCreateImageWithThumbnailInDefaultCollection() throws IOException {
+    void testCreateImageWithThumbnailInDefaultCollection() {
 
         final ImageService imageService = createImageService();
 
@@ -63,13 +62,19 @@ public class ImageServiceUnitTest {
 
         when(userPersistenceContext.find(isA(UUID.class))).thenReturn(user);
 
-        imageService.create(user.getId(), defaultCollection.getId(), List.of(PayloadGenerator.dummyPayloadWithThumbnail()));
+        imageService.create(user.getId(), defaultCollection.getId(), List.of(PayloadGenerator.dummyPayload()));
         verify(imagePersistenceContext).persistAll(imageArgumentCaptor.capture());
+
+        final List<Image> images = imageArgumentCaptor.getValue();
+
+        assertThat(images)
+                .extracting(Image::getThumbnail)
+                .allMatch(thumbnail -> thumbnail.equals(PayloadGenerator.dummyThumbnail()));
 
     }
 
     @Test
-    void testCreateImageInDefaultCollection() throws IOException {
+    void testCreateImageInDefaultCollection() {
 
         final ImageService imageService = createImageService();
 
@@ -80,7 +85,8 @@ public class ImageServiceUnitTest {
 
         when(userPersistenceContext.find(isA(UUID.class))).thenReturn(user);
 
-        imageService.create(user.getId(), defaultCollection.getId(), Collections.singletonList(PayloadGenerator.dummyPayload()));
+        imageService.create(user.getId(), defaultCollection.getId(),
+                Collections.singletonList(PayloadGenerator.dummyPayload()));
         verify(imagePersistenceContext).persistAll(imageArgumentCaptor.capture());
 
         final List<Image> images = imageArgumentCaptor.getValue();
@@ -93,7 +99,7 @@ public class ImageServiceUnitTest {
     }
 
     @Test
-    void testCreateImageInNonDefaultCollection() throws IOException {
+    void testCreateImageInNonDefaultCollection() {
 
         final ImageService imageService = createImageService();
 
@@ -116,7 +122,7 @@ public class ImageServiceUnitTest {
 
         var image = images.get(0);
 
-        assertThat(image.getPayload()).isEqualTo(dummyPayload);
+        assertThat(image.getContent()).isEqualTo(PayloadGenerator.dummyBase64Content());
         assertThat(image.getOwner()).isEqualTo(user);
         assertThat(image.getContainedInCollections()).containsExactlyInAnyOrder(doggoCollection, defaultCollection);
 

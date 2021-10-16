@@ -19,6 +19,11 @@ import java.util.stream.Collectors;
 @Log4j2
 public class ImageService {
 
+    public static final String THUMBNAIL_START_MARKER = "THUMBNAIL_START:";
+    public static final String THUMBNAIL_END_MARKER = ":THUMBNAIL_END";
+    public static final String CONTENT_START_MARKER = "CONTENT_START:";
+    public static final String CONTENT_END_MARKER = ":CONTENT_END";
+
     private final LabelingService labelingService;
     private final TextExtractionService textExtractionService;
     private final IndexMaintainer indexMaintainer;
@@ -55,7 +60,7 @@ public class ImageService {
         var defaultCollection = owner.getSharedCollections().stream().filter(Collection::isDefaultCollection).findAny().get();
 
         var images = base64Payloads.stream()
-                .map(Image::withProperties)
+                .map(payload -> Image.withProperties(thumbnailFromPayload(payload), contentFromPayload(payload)))
                 .peek(image -> setImageToOwnerReference(image, owner))
                 .peek(image -> setImageToCollectionReference(image, collection))
                 .peek(image -> setImageToCollectionReference(image, defaultCollection))
@@ -90,6 +95,27 @@ public class ImageService {
         return imagePersistenceContext.findAll();
 
     }
+
+    private String thumbnailFromPayload(String payload) {
+
+        return extractFromMarkers(payload, THUMBNAIL_START_MARKER, THUMBNAIL_END_MARKER);
+
+    }
+
+    private String contentFromPayload(String payload) {
+
+        return extractFromMarkers(payload, CONTENT_START_MARKER, CONTENT_END_MARKER);
+
+    }
+
+    private String extractFromMarkers(String payload, String startMarker, String endMarker) {
+
+        var intermediate = payload.substring(payload.indexOf(startMarker), payload.indexOf(endMarker));
+        return intermediate.substring(intermediate.indexOf(":") + 1);
+
+    }
+
+
 
     private void setImageToOwnerReference(Image image, User owner) {
 

@@ -75,7 +75,7 @@ public class ImageServiceComponentTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    void testCreateImageInDefaultCollection() throws IOException {
+    void testCreateImageInDefaultCollection() {
 
         var user = User.withProperties("dummy@example.org", "s3cret");
         var defaultCollection = Collection.withProperties("Some default collection", true,
@@ -97,7 +97,7 @@ public class ImageServiceComponentTest {
         final List<Image> createdImages = imageArgumentCaptor.getValue();
 
         assertThat(createdImages)
-                .allMatch(image -> image.getPayload().equals(dummyPayload))
+                .allMatch(image -> image.getContent().equals(PayloadGenerator.dummyBase64Content()))
                 .allMatch(image -> image.getOwner().equals(user))
                 .satisfies(images -> {
                     assertThat(images).hasSize(1);

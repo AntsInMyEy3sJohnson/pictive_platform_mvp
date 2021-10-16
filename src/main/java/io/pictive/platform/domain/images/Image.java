@@ -22,10 +22,10 @@ import java.util.UUID;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 public class Image extends DomainObject {
 
-    public static Image withProperties(String payload) {
+    public static Image withProperties(String thumbnail, String content) {
 
         // TODO Use timestamp on image itself rather than server-created  timestamp
-        return new Image(UUID.randomUUID(), payload, new HashSet<>(), System.currentTimeMillis());
+        return new Image(UUID.randomUUID(), thumbnail, content, new HashSet<>(), System.currentTimeMillis());
 
     }
 
@@ -37,7 +37,11 @@ public class Image extends DomainObject {
 
     @NonNull
     @Lob
-    private String payload;
+    private String thumbnail;
+
+    @NonNull
+    @Lob
+    private String content;
 
     private String extractedText;
 

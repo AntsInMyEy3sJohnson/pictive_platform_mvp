@@ -35,7 +35,7 @@ public class LabelingService {
 
     private void doProductionLabeling(List<Image> images) {
         List<AnnotateImageRequest> annotateImageRequests = images.stream()
-                .map(image -> Optional.ofNullable(assembleAnnotateRequest(image.getPayload())))
+                .map(image -> Optional.ofNullable(assembleAnnotateRequest(image.getContent())))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
@@ -73,7 +73,7 @@ public class LabelingService {
 
         var byteArrayResource = new ByteArrayResource(Base64.decodeBase64(base64Payload));
 
-        ByteString imageBytes = null;
+        ByteString imageBytes;
         try {
             imageBytes = ByteString.readFrom(byteArrayResource.getInputStream());
             com.google.cloud.vision.v1.Image image = com.google.cloud.vision.v1.Image.newBuilder().setContent(imageBytes).build();
