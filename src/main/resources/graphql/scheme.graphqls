@@ -37,7 +37,8 @@ type ImageBag {
 
 type Image {
     id: ID!
-    payload: String!
+    thumbnail: String!
+    content: String!
     extractedText: String
     scoredLabels: [ScoredLabel]!
     containedInCollections: [Collection!]!
