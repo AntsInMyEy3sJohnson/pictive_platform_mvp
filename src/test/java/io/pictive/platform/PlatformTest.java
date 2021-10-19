@@ -41,7 +41,7 @@ public class PlatformTest {
     private CollectionQueryService collectionQueryService;
 
     @Test
-    void testDeleteCollectionWithDeletingImages() throws IOException {
+    void testDeleteCollectionWithDeletingImages() {
 
         String mail = "donna@example.org";
         final User userBeforeDeletion = createUserAndGet(mail);
@@ -62,7 +62,7 @@ public class PlatformTest {
     }
 
     @Test
-    void testDeleteCollectionWithoutDeletingImages() throws Throwable {
+    void testDeleteCollectionWithoutDeletingImages() {
 
         String mail = "steve@example.org";
         final User userBeforeDeletion = createUserAndGet(mail);
@@ -91,7 +91,7 @@ public class PlatformTest {
     }
 
     @Test
-    void testCreateImageInNonDefaultCollection() throws Throwable {
+    void testCreateImageInNonDefaultCollection() {
 
         final String userMail = "dave@example.org";
         final String userID = createUserAndGetID(userMail);

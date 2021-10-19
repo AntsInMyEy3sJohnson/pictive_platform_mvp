@@ -19,7 +19,7 @@ public class UserQueryService implements GraphQLQueryResolver {
 
     }
 
-    public UserBag getUserByMail(String mail) throws Throwable {
+    public UserBag getUserByMail(String mail) {
 
         return UserBag.of(Collections.singletonList(userService.getByMail(mail)));
 

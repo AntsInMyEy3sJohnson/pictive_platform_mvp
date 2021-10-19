@@ -16,7 +16,6 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -98,6 +97,7 @@ public class ImageServiceComponentTest {
 
         assertThat(createdImages)
                 .allMatch(image -> image.getContent().equals(PayloadGenerator.dummyBase64Content()))
+                .allMatch(image -> image.getThumbnail().equals(PayloadGenerator.dummyThumbnail()))
                 .allMatch(image -> image.getOwner().equals(user))
                 .satisfies(images -> {
                     assertThat(images).hasSize(1);

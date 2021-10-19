@@ -34,13 +34,13 @@ public class UserService {
 
     }
 
-    public User getByMail(String mail) throws Throwable {
+    public User getByMail(String mail) {
 
         return userPersistenceContext.findAll()
                 .stream()
                 .filter(user -> user.getMail().equals(mail))
                 .findAny()
-                .orElseThrow((Supplier<Throwable>) () -> new IllegalArgumentException("No such user with mail: " + mail));
+                .orElseThrow(() -> new IllegalArgumentException("No such user with mail: " + mail));
     }
 
     public List<User> getAll() {
