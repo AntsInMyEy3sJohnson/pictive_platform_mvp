@@ -33,6 +33,12 @@ public class ImageService {
     private final PersistenceContext<Image> imagePersistenceContext;
     private final PersistenceContext<Collection> collectionPersistenceContext;
 
+    public Image getByID(UUID id) {
+
+        return imagePersistenceContext.find(id);
+
+    }
+
     public List<Image> search(UUID ownerID, List<UUID> collectionIDs, List<String> labels, String text, String searchMode) {
 
         var owner = userPersistenceContext.find(ownerID);

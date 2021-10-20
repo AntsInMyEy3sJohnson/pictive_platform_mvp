@@ -3,7 +3,9 @@ package io.pictive.platform;
 import io.pictive.platform.api.collection.CollectionBag;
 import io.pictive.platform.api.collection.CollectionMutationService;
 import io.pictive.platform.api.collection.CollectionQueryService;
+import io.pictive.platform.api.image.ImageBag;
 import io.pictive.platform.api.image.ImageMutationService;
+import io.pictive.platform.api.image.ImageQueryService;
 import io.pictive.platform.api.user.UserBag;
 import io.pictive.platform.api.user.UserMutationService;
 import io.pictive.platform.api.user.UserQueryService;
@@ -35,10 +37,38 @@ public class PlatformTest {
     private ImageMutationService imageMutationService;
 
     @Autowired
+    private ImageQueryService imageQueryService;
+
+    @Autowired
     private UserQueryService userQueryService;
 
     @Autowired
     private CollectionQueryService collectionQueryService;
+
+    @Test
+    void testGetImageByID() {
+
+        String mail = "dave@spaceodyssey.org";
+        final User user = createUserAndGet(mail);
+        final String userID = user.getId().toString();
+
+        final Collection defaultCollection = createCollectionAndGet(userID);
+
+        imageMutationService.uploadImages(userID, defaultCollection.getId().toString(), List.of(PayloadGenerator.dummyPayload()));
+
+        final ImageBag allImages = imageQueryService.getImages();
+
+        assertThat(allImages.getImages()).hasSize(1);
+
+        final String imageID = allImages.getImages().get(0).getId().toString();
+
+        final ImageBag imageByID = imageQueryService.getImageByID(imageID);
+
+        assertThat(imageByID.getImages()).hasSize(1);
+
+        assertThat(imageByID.getImages()).containsExactly(allImages.getImages().toArray(new Image[0]));
+
+    }
 
     @Test
     void testDeleteCollectionWithDeletingImages() {

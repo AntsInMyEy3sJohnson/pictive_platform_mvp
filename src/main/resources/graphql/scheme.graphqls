@@ -58,6 +58,7 @@ type Query {
     getCollections: CollectionBag!
     getCollectionByID(id: ID!): CollectionBag!
     getImages: ImageBag!
+    getImageByID(id: ID!): ImageBag!
     getImagesForUserInCollection(userID: ID!, collectionID: ID!): ImageBag!
     searchImagesInCollections(userID: ID!, collectionIDs: [ID!]!, labels: [String!], text: String, searchMode:
     String!): ImageBag!

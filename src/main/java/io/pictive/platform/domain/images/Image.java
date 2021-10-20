@@ -35,6 +35,7 @@ public class Image extends DomainObject {
     @Column(columnDefinition = "uuid", updatable = false)
     private UUID id;
 
+    // TODO Is it a good idea to store the thumbnails on the server side? To optimize rendering, a thumbnail should depend on the devices screen dimensions...
     @NonNull
     @Lob
     private String thumbnail;
