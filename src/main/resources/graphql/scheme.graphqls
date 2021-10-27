@@ -7,7 +7,7 @@ type User {
     id: ID!
     mail: String!
     ownedCollections: [Collection!]!
-    sharedCollections: [Collection!]!
+    sourcedCollections: [Collection!]!
     defaultCollection: Collection!
     ownedImages: [Image!]
 }
@@ -21,11 +21,11 @@ type Collection {
     id: ID!
     defaultCollection: Boolean!
     images: [Image]!
-    sharedWith: [User!]!
+    sourcedBy: [User!]!
     owner: User!
     displayName: String!
     pin: Int!
-    nonOwnersCanShare: Boolean!
+    sourcingAllowed: Boolean!
     nonOwnersCanWrite: Boolean!
     creationTimestamp: String!
 }
@@ -70,6 +70,6 @@ type Mutation {
     createCollection(ownerID: ID!, displayName: String!, pin: Int!, nonOwnersCanShare: Boolean!, nonOwnersCanWrite:
     Boolean!): CollectionBag!
     deleteCollection(collectionID: ID!, deleteContainedImages: Boolean!): CollectionBag!
-    shareCollection(collectionID: ID!, ownerID: ID!, userIDs: [ID!]!): CollectionBag!
+    sourceCollection(idOfSourcingUser: ID!, collectionID: ID!, pin: Int!): CollectionBag!
     uploadImages(ownerID: ID!, collectionID: ID!, base64Payloads: [String!]!): ImageBag!
 }

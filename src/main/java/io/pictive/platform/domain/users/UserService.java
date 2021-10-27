@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.function.Supplier;
 
 
 @Service
@@ -23,10 +22,10 @@ public class UserService {
 
         user.setDefaultCollection(collection);
         user.getOwnedCollections().add(collection);
-        user.getSharedCollections().add(collection);
+        user.getSourcedCollections().add(collection);
 
         collection.setOwner(user);
-        collection.getSharedWith().add(user);
+        collection.getSourcedBy().add(user);
 
         userPersistenceContext.persist(user);
 

@@ -80,7 +80,7 @@ public class ImageServiceComponentTest {
         var defaultCollection = Collection.withProperties("Some default collection", true,
                 1234, false, false);
         user.setDefaultCollection(defaultCollection);
-        user.getSharedCollections().add(defaultCollection);
+        user.getSourcedCollections().add(defaultCollection);
 
         when(userPersistenceContext.find(isA(UUID.class))).thenReturn(user);
         when(collectionPersistenceContext.find(isA(UUID.class))).thenReturn(defaultCollection);

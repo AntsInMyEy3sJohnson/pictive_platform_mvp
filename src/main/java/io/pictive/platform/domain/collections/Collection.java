@@ -21,10 +21,10 @@ import java.util.UUID;
 public class Collection extends DomainObject {
 
     public static Collection withProperties(String displayName, boolean defaultCollection, int pin,
-                                            boolean nonOwnersCanShare, boolean nonOwnersCanWrite) {
+                                            boolean sourcingAllowed, boolean nonOwnersCanWrite) {
 
         return new Collection(UUID.randomUUID(), defaultCollection, new HashSet<>(), new HashSet<>(),
-                displayName, pin, nonOwnersCanShare, nonOwnersCanWrite, System.currentTimeMillis());
+                displayName, pin, sourcingAllowed, nonOwnersCanWrite, System.currentTimeMillis());
 
     }
 
@@ -46,9 +46,9 @@ public class Collection extends DomainObject {
     private Set<Image> images;
 
     @NonNull
-    @ManyToMany(mappedBy = "sharedCollections", cascade = CascadeType.MERGE)
+    @ManyToMany(mappedBy = "sourcedCollections", cascade = CascadeType.MERGE)
     @Fetch(FetchMode.JOIN)
-    private Set<User> sharedWith;
+    private Set<User> sourcedBy;
 
     @ManyToOne
     private User owner;
@@ -60,7 +60,7 @@ public class Collection extends DomainObject {
     private int pin;
 
     @NonNull
-    private boolean nonOwnersCanShare;
+    private boolean sourcingAllowed;
 
     @NonNull
     private boolean nonOwnersCanWrite;

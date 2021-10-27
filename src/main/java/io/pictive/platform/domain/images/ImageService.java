@@ -45,7 +45,7 @@ public class ImageService {
 
         var collections = collectionPersistenceContext.findAll(collectionIDs);
 
-        if (collections.stream().anyMatch(collection -> !collection.getSharedWith().contains(owner))) {
+        if (collections.stream().anyMatch(collection -> !collection.getSourcedBy().contains(owner))) {
             throw new IllegalStateException(String.format("Unable to perform search: Given list of collections contains at least one collection user '%s' does not have access to.", ownerID));
         }
 
@@ -62,8 +62,8 @@ public class ImageService {
         // will deliver objects the same in terms of the ID, but NOT the same in terms of object reference, leading to
         // an IllegalStateException in Hibernate ("Multiple representations of the same entity being merged") when attempting
         // to persist back the object tree
-        var collection = owner.getSharedCollections().stream().filter(c -> c.getId().equals(collectionID)).findAny().get();
-        var defaultCollection = owner.getSharedCollections().stream().filter(Collection::isDefaultCollection).findAny().get();
+        var collection = owner.getSourcedCollections().stream().filter(c -> c.getId().equals(collectionID)).findAny().get();
+        var defaultCollection = owner.getSourcedCollections().stream().filter(Collection::isDefaultCollection).findAny().get();
 
         var images = base64Payloads.stream()
                 .map(payload -> Image.withProperties(thumbnailFromPayload(payload), contentFromPayload(payload)))
@@ -88,7 +88,7 @@ public class ImageService {
 
         var collection = collectionPersistenceContext.find(collectionID);
 
-        if (!user.getSharedCollections().contains(collection)) {
+        if (!user.getSourcedCollections().contains(collection)) {
             throw new IllegalStateException(String.format("Unable to retrieve images from collection: Collection '%s' was not shared with user '%s'.", collectionID, userID));
         }
 

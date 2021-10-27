@@ -51,10 +51,10 @@ public class User extends DomainObject {
     @NonNull
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Fetch(FetchMode.JOIN)
-    @JoinTable(name = "shared_with",
+    @JoinTable(name = "sourced_by",
             joinColumns = {@JoinColumn(name = "fk_user")},
             inverseJoinColumns = {@JoinColumn(name = "fk_collection")})
-    private Set<Collection> sharedCollections;
+    private Set<Collection> sourcedCollections;
 
     @OneToOne(mappedBy = "owner", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Collection defaultCollection;

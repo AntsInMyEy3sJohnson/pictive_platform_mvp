@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,10 +23,10 @@ public class CollectionMutationService implements GraphQLMutationResolver {
 
     }
 
-    public CollectionBag shareCollection(String collectionID, String ownerID, List<String> userIDs) {
+    public CollectionBag sourceCollection(String idOfSourcingUser, String collectionID, int pin) {
 
-        return CollectionBag.of(Collections.singletonList(collectionService.share(
-                uuidHelper.asUuid(collectionID), uuidHelper.asUuid(ownerID), uuidHelper.asUuid(userIDs))));
+        return CollectionBag.of(Collections.singletonList(collectionService.source(
+                uuidHelper.asUuid(idOfSourcingUser), uuidHelper.asUuid(collectionID), pin)));
 
     }
 

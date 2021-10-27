@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -109,7 +108,7 @@ public class PlatformTest {
         final User userAfterDeletion = userQueryService.getUserByMail(mail).getUsers().get(0);
 
         assertThat(userAfterDeletion.getOwnedCollections()).doesNotContain(collection);
-        assertThat(userAfterDeletion.getSharedCollections()).doesNotContain(collection);
+        assertThat(userAfterDeletion.getSourcedCollections()).doesNotContain(collection);
 
         final Collection userDefaultCollection = collectionQueryService.getCollectionByID(userBeforeDeletion.getDefaultCollection().getId().toString()).getCollections().get(0);
 
@@ -129,7 +128,7 @@ public class PlatformTest {
 
         final Image image = imageMutationService.uploadImages(userID, nonDefaultCollectionID, List.of(PayloadGenerator.dummyPayload())).getImages().get(0);
         final User user = userQueryService.getUserByMail(userMail).getUsers().get(0);
-        final List<Collection> userCollections = List.of(user.getSharedCollections().toArray(new Collection[]{}));
+        final List<Collection> userCollections = List.of(user.getSourcedCollections().toArray(new Collection[]{}));
 
         assertThat(userCollections).hasSize(2);
 

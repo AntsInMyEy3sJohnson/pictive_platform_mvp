@@ -13,7 +13,6 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -58,7 +57,7 @@ public class ImageServiceUnitTest {
         var user = createUser();
         var defaultCollection = createCollection("Default collection", true);
         user.setDefaultCollection(defaultCollection);
-        user.getSharedCollections().add(defaultCollection);
+        user.getSourcedCollections().add(defaultCollection);
 
         when(userPersistenceContext.find(isA(UUID.class))).thenReturn(user);
 
@@ -81,7 +80,7 @@ public class ImageServiceUnitTest {
         var user = createUser();
         var defaultCollection = createCollection("Default collection", true);
         user.setDefaultCollection(defaultCollection);
-        user.getSharedCollections().add(defaultCollection);
+        user.getSourcedCollections().add(defaultCollection);
 
         when(userPersistenceContext.find(isA(UUID.class))).thenReturn(user);
 
@@ -107,7 +106,7 @@ public class ImageServiceUnitTest {
         var defaultCollection = createCollection("Default collection", true);
         var doggoCollection = createCollection("Doggos", false);
         user.setDefaultCollection(defaultCollection);
-        user.getSharedCollections().addAll(List.of(defaultCollection, doggoCollection));
+        user.getSourcedCollections().addAll(List.of(defaultCollection, doggoCollection));
 
         when(userPersistenceContext.find(isA(UUID.class))).thenReturn(user);
 
