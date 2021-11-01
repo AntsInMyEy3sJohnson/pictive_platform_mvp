@@ -120,10 +120,10 @@ public class CollectionServiceUnitTest {
     }
 
     /**
-     * "Happy case"
+     * "Happy path"
      */
     @Test
-    void testSourceWhenSourcingUserIsNotOwnerAndOwnerHasAllowedSharingAndPinIsCorrect() {
+    void testSourceWhenSourcingUserIsNotOwnerAndOwnerHasAllowedSourcingAndPinIsCorrect() {
 
         final CollectionService collectionService = new CollectionService(collectionPersistenceContext, userPersistenceContext, null);
 

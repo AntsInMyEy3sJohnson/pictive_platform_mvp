@@ -64,9 +64,9 @@ public class CollectionService {
 
     }
 
-    public Collection source(UUID idOfImportingUser, UUID collectionID, int pin) {
+    public Collection source(UUID idOfSourcingUser, UUID collectionID, int pin) {
 
-        var sourcingUser = userPersistenceContext.find(idOfImportingUser);
+        var sourcingUser = userPersistenceContext.find(idOfSourcingUser);
         var collection = collectionPersistenceContext.find(collectionID);
 
         if (collection.getOwner().equals(sourcingUser)) {
@@ -75,14 +75,14 @@ public class CollectionService {
             // of the source code making sure of this -- check for ownership explicitly here to avoid this method
             // from breaking if the other part of the source code is accidentally changed
             throw new OwnerCannotSourceOwnedCollectionException(CANNOT_SOURCE_COLLECTION_ERROR_PREFIX +
-                    String.format("User '%s' owns collection '%s' and has thus implicitly sourced it, thus cannot source it again.",
-                            idOfImportingUser, collectionID));
+                    String.format("As the owner of collection '%s', user '%s' has implicitly sourced it, thus cannot source it again",
+                            idOfSourcingUser, collectionID));
         }
 
         if (collection.getSourcedBy().contains(sourcingUser)) {
             throw new UserAlreadySourcedCollectionException(CANNOT_SOURCE_COLLECTION_ERROR_PREFIX +
                     String.format("Cannot source collection: User with id '%s' has already source collection, so cannot source it again",
-                            idOfImportingUser));
+                            idOfSourcingUser));
         }
 
         if (!collection.isSourcingAllowed()) {
@@ -105,12 +105,11 @@ public class CollectionService {
     }
 
 
-    public Collection create(UUID ownerID, String displayName, int pin, boolean nonOwnersCanShare, boolean nonOwnersCanWrite) {
+    public Collection create(UUID ownerID, String displayName, int pin, boolean sourcingAllowed, boolean nonOwnersCanWrite) {
 
         var owner = userPersistenceContext.find(ownerID);
 
-        var collection = Collection.withProperties(displayName, false, pin, nonOwnersCanShare,
-                nonOwnersCanWrite);
+        var collection = Collection.withProperties(displayName, false, pin, sourcingAllowed, nonOwnersCanWrite);
         collection.setOwner(owner);
         collection.getSourcedBy().add(owner);
 

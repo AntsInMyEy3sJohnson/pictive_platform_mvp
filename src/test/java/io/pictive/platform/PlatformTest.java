@@ -26,6 +26,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ComponentScan("io.pictive.platform")
 public class PlatformTest {
 
+    private static final int DUMMY_COLLECTION_PIN = 1234;
+
     @Autowired
     private UserMutationService userMutationService;
 
@@ -43,6 +45,32 @@ public class PlatformTest {
 
     @Autowired
     private CollectionQueryService collectionQueryService;
+
+    /**
+     * "Happy path"
+     */
+    @Test
+    void testSourceCollectionWhenSourceUserIsNotOwnerAndOwnerHasAllowedSourcingAndPinIsCorrect() {
+
+        String ownerMail = "dave@spaceodyssey.org";
+        final User owner = createUserAndGet(ownerMail);
+
+        String nonOwnerMail = "hal@spaceodyssey.org";
+        final User nonOwnerBeforeSourcing = createUserAndGet(nonOwnerMail);
+
+        final Collection collectionToBeSourced = createCollectionAndGet(owner.getId().toString());
+
+        collectionMutationService.sourceCollection(nonOwnerBeforeSourcing.getId().toString(), collectionToBeSourced.getId().toString(), DUMMY_COLLECTION_PIN);
+
+        final Collection collectionAfterSourcing = collectionQueryService.getCollectionByID(collectionToBeSourced.getId().toString()).getCollections().get(0);
+
+        assertThat(collectionAfterSourcing.getSourcedBy()).containsExactlyInAnyOrder(owner, nonOwnerBeforeSourcing);
+
+        final User nonOwnerAfterSourcing = userQueryService.getUserByMail(nonOwnerMail).getUsers().get(0);
+
+        assertThat(nonOwnerAfterSourcing.getSourcedCollections()).contains(collectionAfterSourcing);
+
+    }
 
     @Test
     void testGetImageByID() {
@@ -163,7 +191,7 @@ public class PlatformTest {
 
     Collection createCollectionAndGet(String userID) {
 
-        final CollectionBag collectionBag = collectionMutationService.createCollection(userID, "Doggos", 1234, false, false);
+        final CollectionBag collectionBag = collectionMutationService.createCollection(userID, "Doggos", DUMMY_COLLECTION_PIN, true, false);
         return collectionBag.getCollections().get(0);
 
     }

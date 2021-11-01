@@ -30,10 +30,10 @@ public class CollectionMutationService implements GraphQLMutationResolver {
 
     }
 
-    public CollectionBag createCollection(String ownerID, String displayName, int pin, boolean nonOwnersCanShare, boolean nonOwnersCanWrite) {
+    public CollectionBag createCollection(String ownerID, String displayName, int pin, boolean sourcingAllowed, boolean nonOwnersCanWrite) {
 
         return CollectionBag.of(Collections.singletonList(collectionService.create(uuidHelper.asUuid(ownerID),
-                displayName, pin, nonOwnersCanShare, nonOwnersCanWrite)));
+                displayName, pin, sourcingAllowed, nonOwnersCanWrite)));
 
     }
 
