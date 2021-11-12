@@ -20,8 +20,8 @@ spec:
     spec:
       containers:
       - name: pictive
-        # v0.0.4-SNAPSHOT
-        image: "antsinmyey3sjohnson/pictive-platform-mvp@sha256:6c0d95ccd7cb0318a51cfdc7c4ead04a707f7ba9e7456ff6419365a1b459fd33"
+        # v0.0.5-SNAPSHOT
+        image: "antsinmyey3sjohnson/pictive-platform-mvp@sha256:41370ae0065f6e87a2de9b0ac33e97d3184009d78335ccae12a97481f60499ae"
         livenessProbe:
           httpGet:
             path: /actuator/health/liveness
@@ -46,7 +46,7 @@ spec:
           value: "false"
         resources:
           requests:
-            cpu: 500
+            cpu: 500m
             memory: 1Gi
           limits: 
             cpu: 1
