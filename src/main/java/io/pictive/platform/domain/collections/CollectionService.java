@@ -11,9 +11,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,18 +36,31 @@ public class CollectionService {
         }
 
         var collection = collectionPersistenceContext.find(collectionID);
-
-        if (deleteContainedImages) {
-            collection.getImages().forEach(image -> {
-                // Clear all collection references pointing to each image
-                image.getContainedInCollections().forEach(c -> c.getImages().removeIf(i -> i.equals(image)));
-                image.getContainedInCollections().clear();
-            });
-            imagePersistenceContext.deleteAll(collection.getImages());
-        }
+        var owner = collection.getOwner();
 
         // Clear all image references pointing to this collection
         collection.getImages().forEach(image -> image.getContainedInCollections().removeIf(c -> c.equals(collection)));
+
+        if (deleteContainedImages) {
+            // Get all images this collection contains. Then, find all collections those images are contained in.
+            // Then, for this set of collections, remove all references to all images contained in the collection to be deleted.
+            final List<Image> imagesToDeleteWithCollection = new ArrayList<>(collection.getImages()).stream()
+                    // Caution: If a collection is imported, it's possible for it to contain images by arbitrary users.
+                    // Thus, make sure the images to be deleted are actually owned by the owner of the collection to be deleted.
+                    .filter(i -> i.getOwner().equals(owner))
+                    .collect(Collectors.toList());
+            final List<Collection> collectionsReferencingImages = imagesToDeleteWithCollection
+                    .stream()
+                    .map(Image::getContainedInCollections)
+                    .flatMap(java.util.Collection::stream)
+                    .collect(Collectors.toList());
+            collectionsReferencingImages.forEach(referencingCollection ->
+                    referencingCollection.getImages().removeIf(imagesToDeleteWithCollection::contains));
+            imagesToDeleteWithCollection.forEach(i -> i.getContainedInCollections().clear());
+            owner.getOwnedImages().removeIf(imagesToDeleteWithCollection::contains);
+            imagePersistenceContext.deleteAll(imagesToDeleteWithCollection);
+        }
+
         collection.getImages().clear();
 
         // Clear all user references pointing to this collection
@@ -54,7 +69,7 @@ public class CollectionService {
             user.getSourcedCollections().removeIf(c -> c.equals(collection));
         });
         collection.getSourcedBy().clear();
-        var owner = collection.getOwner();
+
         collection.setOwner(null);
 
         userPersistenceContext.persist(owner);
